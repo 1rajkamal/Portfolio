@@ -225,7 +225,7 @@ body{
 }
 .skills {
     text-align: center;
-    font-size: 30px; /* Bigger Text */
+    font-size: 30px; 
     font-weight: bold;
     color: cyan;
 }
