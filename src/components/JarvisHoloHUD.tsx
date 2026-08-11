@@ -366,21 +366,35 @@ const JarvisHoloHUDInner: React.FC = () => {
       const nonHudElements = elements.filter(el => el && !el.closest('[data-jarvis-hud]'));
       if (nonHudElements.length === 0) return;
 
-      // Priority 1: Search the full element z-stack for any interactive element or ancestor
+      // Priority 1: Search the full element z-stack for specific interactive controls first
       let clickTarget: HTMLElement | null = null;
 
       for (const el of nonHudElements) {
-        const interactive = (el as Element).closest(
-          'button, a, input, textarea, select, [role="button"], [role="link"], [role="tab"], [tabindex], label, summary, [onclick], .cursor-pointer, .glass-card, .btn-luxury, .btn-primary, [data-interactive]'
+        const directInteractive = (el as Element).closest(
+          'button, a, input, textarea, select, [role="button"], [role="link"], [role="tab"], label, summary, [onclick], .btn-luxury, .btn-primary'
         ) as HTMLElement | null;
 
-        if (interactive) {
-          clickTarget = interactive;
+        if (directInteractive) {
+          clickTarget = directInteractive;
           break;
         }
       }
 
-      // Priority 2: Fallback to the topmost non-HUD element
+      // Priority 2: Custom clickable card wrappers
+      if (!clickTarget) {
+        for (const el of nonHudElements) {
+          const customClickable = (el as Element).closest(
+            '[tabindex], .cursor-pointer'
+          ) as HTMLElement | null;
+
+          if (customClickable) {
+            clickTarget = customClickable;
+            break;
+          }
+        }
+      }
+
+      // Priority 3: Fallback to the topmost non-HUD element
       if (!clickTarget) {
         clickTarget = nonHudElements[0] as HTMLElement;
       }
