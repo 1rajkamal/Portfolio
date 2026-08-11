@@ -39,6 +39,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           cname: rajkamall.me
+          force_orphan: true
 
       - name: Upload artifact for GitHub Actions deployment
         uses: actions/upload-pages-artifact@v3
