@@ -8,6 +8,7 @@ import { FloatingIsland } from './FloatingIsland';
 import { WorldLandmarks } from './Landmarks';
 import { WorldProps } from './WorldProps';
 import { HoverPlayer } from './HoverPlayer';
+import { TimeTrialTrack } from './TimeTrialTrack';
 import { WorldHUD } from './WorldHUD';
 import { worldStore } from '../../context/World3DState';
 
@@ -69,6 +70,7 @@ export const WorldCanvas: React.FC = () => {
             <FloatingIsland />
             <WorldLandmarks />
             <WorldProps />
+            <TimeTrialTrack />
             <HoverPlayer />
           </Physics>
         </Suspense>

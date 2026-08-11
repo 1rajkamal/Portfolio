@@ -13,16 +13,47 @@ import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { ScrollColorBackdrop } from './components/ScrollColorBackdrop';
 import { WorldCanvas } from './components/3d/WorldCanvas';
+import { TerminalModal } from './components/TerminalModal';
+import { MatrixRain } from './components/MatrixRain';
 import { worldStore, useWorldStore } from './context/World3DState';
 
 export const AppContent: React.FC = () => {
   const is3DActive = useWorldStore(s => s.is3DActive);
+  const terminalOpen = useWorldStore(s => s.terminalOpen);
+  const matrixActive = useWorldStore(s => s.matrixActive);
 
   useEffect(() => {
     // Hash router check for #3d on page load
     if (window.location.hash === '#3d' || window.location.pathname.includes('3d')) {
       worldStore.setIs3DActive(true);
     }
+
+    // Global keyboard shortcut listener
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Toggle terminal on `~`, `Ctrl+K`, `Cmd+K`, or `Alt+T`
+      if (
+        e.key === '`' ||
+        e.key === '~' ||
+        ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') ||
+        (e.altKey && e.key.toLowerCase() === 't')
+      ) {
+        // Prevent opening if typing in input or textarea (unless it was Ctrl+K)
+        const target = e.target as HTMLElement;
+        const isInputField = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+        if (e.key === '`' && isInputField) return;
+
+        e.preventDefault();
+        worldStore.setTerminalOpen(!worldStore.getState().terminalOpen);
+      }
+
+      // Exit Matrix Rain on Escape
+      if (e.key === 'Escape' && worldStore.getState().matrixActive) {
+        worldStore.setMatrixActive(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   // When switching from 3D back to 2D portfolio, auto-scroll to the requested hash target
@@ -62,6 +93,15 @@ export const AppContent: React.FC = () => {
           <Footer />
         </div>
       )}
+
+      {/* Global Developer Terminal Console */}
+      <TerminalModal
+        isOpen={terminalOpen}
+        onClose={() => worldStore.setTerminalOpen(false)}
+      />
+
+      {/* Fullscreen Neural Matrix Rain Mode */}
+      {matrixActive && <MatrixRain />}
     </>
   );
 };

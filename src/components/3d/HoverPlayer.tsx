@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import { RigidBody, CuboidCollider, RapierRigidBody } from '@react-three/rapier';
 import { RoundedBox } from '@react-three/drei';
 import { PORTFOLIO_DATA } from '../../data/portfolioData';
-import { worldStore, PLAYER_TELEMETRY } from '../../context/World3DState';
+import { worldStore, useWorldStore, PLAYER_TELEMETRY, VehicleSkin } from '../../context/World3DState';
 import { SOUNDS } from '../../utils/soundEffects';
 
 const SPAWN_POINT = PORTFOLIO_DATA.world3d.spawnPoint;
@@ -14,12 +14,66 @@ const camTarget = new THREE.Vector3();
 const lookTarget = new THREE.Vector3();
 const playerPosVec = new THREE.Vector3();
 
+const SKIN_CONFIGS: Record<
+  VehicleSkin,
+  {
+    name: string;
+    bodyBase: string;
+    bodyHood: string;
+    accent: string;
+    canopyColor: string;
+    wheelRing: string;
+    underglow: string;
+    jetColor: string;
+    tailLight: string;
+    headlight: string;
+  }
+> = {
+  'cyber-cyan': {
+    name: 'Cyber Cyan Rover',
+    bodyBase: '#020617',
+    bodyHood: '#0f172a',
+    accent: '#00f5ff',
+    canopyColor: '#00f5ff',
+    wheelRing: '#00f5ff',
+    underglow: '#00f5ff',
+    jetColor: '#00f5ff',
+    tailLight: '#ff007f',
+    headlight: '#00f5ff'
+  },
+  'hyper-pink': {
+    name: 'Hyper Pink Speeder',
+    bodyBase: '#180816',
+    bodyHood: '#2e1065',
+    accent: '#ec4899',
+    canopyColor: '#f43f5e',
+    wheelRing: '#fb7185',
+    underglow: '#ec4899',
+    jetColor: '#fb7185',
+    tailLight: '#00f5ff',
+    headlight: '#f43f5e'
+  },
+  'phantom-gold': {
+    name: 'Phantom Gold Interceptor',
+    bodyBase: '#1c1917',
+    bodyHood: '#292524',
+    accent: '#eab308',
+    canopyColor: '#10b981',
+    wheelRing: '#fbbf24',
+    underglow: '#10b981',
+    jetColor: '#f59e0b',
+    tailLight: '#22c55e',
+    headlight: '#fbbf24'
+  }
+};
+
 // Cyber Hover Car Wheel / Turbine
-const HoverWheel: React.FC<{ position: [number, number, number]; isFront?: boolean; steeringAngle: React.MutableRefObject<number> }> = ({
-  position,
-  isFront,
-  steeringAngle
-}) => {
+const HoverWheel: React.FC<{
+  position: [number, number, number];
+  isFront?: boolean;
+  steeringAngle: React.MutableRefObject<number>;
+  ringColor: string;
+}> = ({ position, isFront, steeringAngle, ringColor }) => {
   const wheelGroupRef = useRef<THREE.Group>(null);
   const ringRef = useRef<THREE.Mesh>(null);
 
@@ -49,13 +103,16 @@ const HoverWheel: React.FC<{ position: [number, number, number]; isFront?: boole
       {/* Neon Energy Ring */}
       <mesh rotation={[0, 0, Math.PI / 2]}>
         <torusGeometry args={[0.33, 0.04, 8, 24]} />
-        <meshBasicMaterial color="#00f5ff" toneMapped={false} />
+        <meshBasicMaterial color={ringColor} toneMapped={false} />
       </mesh>
     </group>
   );
 };
 
 export const HoverPlayer: React.FC = () => {
+  const vehicleSkin = useWorldStore(s => s.vehicleSkin);
+  const skin = SKIN_CONFIGS[vehicleSkin] || SKIN_CONFIGS['cyber-cyan'];
+
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   const carYawRef = useRef<THREE.Group>(null);
   const carBodyRef = useRef<THREE.Group>(null);
@@ -244,6 +301,7 @@ export const HoverPlayer: React.FC = () => {
 
     // Dynamic Jet Thrusters & Underglow
     if (underglowRef.current) {
+      underglowRef.current.color.set(skin.underglow);
       underglowRef.current.intensity = 8 + 18 * speedRatio + (isBoost ? 12 : 0);
     }
     const jetScaleZ = 0.5 + speedRatio * (isBoost ? 3.0 : 1.8);
@@ -309,27 +367,33 @@ export const HoverPlayer: React.FC = () => {
           {/* ================= MAIN CYBER CAR CHASSIS ================= */}
           {/* Lower aerodynamic base */}
           <RoundedBox args={[1.8, 0.28, 3.4]} radius={0.12} smoothness={4} castShadow>
-            <meshStandardMaterial color="#020617" metalness={0.9} roughness={0.15} />
+            <meshStandardMaterial color={skin.bodyBase} metalness={0.9} roughness={0.15} />
           </RoundedBox>
 
           {/* Upper Sports Hood & Sloped Nose */}
           <mesh position={[0, 0.22, -0.4]} rotation={[-0.14, 0, 0]} castShadow>
             <boxGeometry args={[1.6, 0.22, 2.0]} />
-            <meshStandardMaterial color="#0f172a" metalness={0.85} roughness={0.2} />
+            <meshStandardMaterial color={skin.bodyHood} metalness={0.85} roughness={0.2} />
           </mesh>
 
-          {/* Front Carbon Fiber Splitter */}
+          {/* Front Splitter */}
           <mesh position={[0, -0.08, -1.75]} castShadow>
             <boxGeometry args={[1.9, 0.08, 0.4]} />
-            <meshStandardMaterial color="#00f5ff" emissive="#00f5ff" emissiveIntensity={0.6} metalness={0.9} roughness={0.1} />
+            <meshStandardMaterial
+              color={skin.accent}
+              emissive={skin.accent}
+              emissiveIntensity={0.6}
+              metalness={0.9}
+              roughness={0.1}
+            />
           </mesh>
 
           {/* ================= COCKPIT CANOPY ================= */}
           <mesh position={[0, 0.45, 0.1]} rotation={[0.08, 0, 0]} castShadow>
             <boxGeometry args={[1.2, 0.35, 1.3]} />
             <meshPhysicalMaterial
-              color="#00f5ff"
-              emissive="#00f5ff"
+              color={skin.canopyColor}
+              emissive={skin.canopyColor}
               emissiveIntensity={0.4}
               transparent
               opacity={0.7}
@@ -344,35 +408,53 @@ export const HoverPlayer: React.FC = () => {
             {/* Wing Blade */}
             <mesh castShadow>
               <boxGeometry args={[1.9, 0.08, 0.35]} />
-              <meshStandardMaterial color="#00f5ff" emissive="#00f5ff" emissiveIntensity={0.8} />
+              <meshStandardMaterial color={skin.accent} emissive={skin.accent} emissiveIntensity={0.8} />
             </mesh>
             {/* Struts */}
             {[-0.6, 0.6].map((x, i) => (
               <mesh key={i} position={[x, -0.22, 0]} castShadow>
                 <boxGeometry args={[0.08, 0.38, 0.2]} />
-                <meshStandardMaterial color="#0f172a" metalness={0.9} />
+                <meshStandardMaterial color={skin.bodyHood} metalness={0.9} />
               </mesh>
             ))}
           </group>
 
           {/* ================= 4 MAG-LEV HOVER WHEELS ================= */}
-          <HoverWheel position={[-0.95, -0.1, -1.05]} isFront steeringAngle={steeringAngleRef} />
-          <HoverWheel position={[0.95, -0.1, -1.05]} isFront steeringAngle={steeringAngleRef} />
-          <HoverWheel position={[-0.98, -0.1, 1.05]} steeringAngle={steeringAngleRef} />
-          <HoverWheel position={[0.98, -0.1, 1.05]} steeringAngle={steeringAngleRef} />
+          <HoverWheel
+            position={[-0.95, -0.1, -1.05]}
+            isFront
+            steeringAngle={steeringAngleRef}
+            ringColor={skin.wheelRing}
+          />
+          <HoverWheel
+            position={[0.95, -0.1, -1.05]}
+            isFront
+            steeringAngle={steeringAngleRef}
+            ringColor={skin.wheelRing}
+          />
+          <HoverWheel
+            position={[-0.98, -0.1, 1.05]}
+            steeringAngle={steeringAngleRef}
+            ringColor={skin.wheelRing}
+          />
+          <HoverWheel
+            position={[0.98, -0.1, 1.05]}
+            steeringAngle={steeringAngleRef}
+            ringColor={skin.wheelRing}
+          />
 
           {/* ================= DUAL LED HEADLIGHT BEAMS ================= */}
           {[-0.65, 0.65].map((x, i) => (
             <mesh key={i} position={[x, 0.12, -1.7]}>
               <boxGeometry args={[0.3, 0.08, 0.08]} />
-              <meshBasicMaterial color="#00f5ff" toneMapped={false} />
+              <meshBasicMaterial color={skin.headlight} toneMapped={false} />
             </mesh>
           ))}
           <spotLight
             ref={leftHeadlightRef}
             position={[-0.65, 0.3, -1.7]}
             target-position={[-0.65, -0.5, -12]}
-            color="#00f5ff"
+            color={skin.headlight}
             intensity={12}
             angle={0.6}
             penumbra={0.4}
@@ -382,7 +464,7 @@ export const HoverPlayer: React.FC = () => {
             ref={rightHeadlightRef}
             position={[0.65, 0.3, -1.7]}
             target-position={[0.65, -0.5, -12]}
-            color="#00f5ff"
+            color={skin.headlight}
             intensity={12}
             angle={0.6}
             penumbra={0.4}
@@ -392,7 +474,7 @@ export const HoverPlayer: React.FC = () => {
           {/* ================= REAR NEON TAILLIGHT BAR ================= */}
           <mesh position={[0, 0.18, 1.72]}>
             <boxGeometry args={[1.65, 0.06, 0.08]} />
-            <meshBasicMaterial color="#ff007f" toneMapped={false} />
+            <meshBasicMaterial color={skin.tailLight} toneMapped={false} />
           </mesh>
 
           {/* ================= TWIN REAR JET THRUSTERS ================= */}
@@ -407,17 +489,17 @@ export const HoverPlayer: React.FC = () => {
                 {/* Plasma Jet Flame */}
                 <mesh ref={i === 0 ? leftJetRef : rightJetRef} position={[0, 0, 0.45]} rotation={[Math.PI / 2, 0, 0]}>
                   <coneGeometry args={[0.16, 0.9, 16, 1, true]} />
-                  <meshBasicMaterial color="#00f5ff" transparent opacity={0.8} side={THREE.DoubleSide} toneMapped={false} />
+                  <meshBasicMaterial color={skin.jetColor} transparent opacity={0.8} side={THREE.DoubleSide} toneMapped={false} />
                 </mesh>
               </group>
             ))}
           </group>
 
           {/* ================= NEON UNDERGLOW ================= */}
-          <pointLight ref={underglowRef} position={[0, -0.4, 0]} color="#00f5ff" intensity={8} distance={10} />
+          <pointLight ref={underglowRef} position={[0, -0.4, 0]} color={skin.underglow} intensity={8} distance={10} />
           <mesh position={[0, -0.35, 0]} rotation={[-Math.PI / 2, 0, 0]}>
             <circleGeometry args={[1.8, 32]} />
-            <meshBasicMaterial color="#00f5ff" transparent opacity={0.35} toneMapped={false} />
+            <meshBasicMaterial color={skin.underglow} transparent opacity={0.35} toneMapped={false} />
           </mesh>
         </group>
       </group>

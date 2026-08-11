@@ -1,4 +1,18 @@
 import { useState, useEffect } from 'react';
+import { SOUNDS, startAmbientSynth, stopAmbientSynth, isAmbientSynthActive } from '../utils/soundEffects';
+
+export type WeatherMode = 'midnight' | 'sunset' | 'matrix';
+export type VehicleSkin = 'cyber-cyan' | 'hyper-pink' | 'phantom-gold';
+
+export interface TimeTrialState {
+  active: boolean;
+  currentRing: number;
+  totalRings: number;
+  startTime: number;
+  elapsed: number;
+  bestTime: number | null;
+  finished: boolean;
+}
 
 export interface WorldState {
   started: boolean;
@@ -12,6 +26,12 @@ export interface WorldState {
   respawnTick: number;
   launch: { tick: number; power: number };
   is3DActive: boolean;
+  weatherMode: WeatherMode;
+  vehicleSkin: VehicleSkin;
+  timeTrial: TimeTrialState;
+  terminalOpen: boolean;
+  matrixActive: boolean;
+  synthAudioPlaying: boolean;
 }
 
 type Listener = () => void;
@@ -28,7 +48,21 @@ class Store {
     jumpTick: 0,
     respawnTick: 0,
     launch: { tick: 0, power: 0 },
-    is3DActive: false
+    is3DActive: false,
+    weatherMode: 'midnight',
+    vehicleSkin: 'cyber-cyan',
+    timeTrial: {
+      active: false,
+      currentRing: 0,
+      totalRings: 6,
+      startTime: 0,
+      elapsed: 0,
+      bestTime: null,
+      finished: false
+    },
+    terminalOpen: false,
+    matrixActive: false,
+    synthAudioPlaying: false
   };
 
   private listeners = new Set<Listener>();
@@ -91,7 +125,11 @@ class Store {
   }
 
   toggleMute() {
-    this.setState(s => ({ muted: !s.muted }));
+    const nextMuted = !this.state.muted;
+    this.setState({ muted: nextMuted });
+    if (nextMuted && this.state.synthAudioPlaying) {
+      stopAmbientSynth();
+    }
   }
 
   setJoy(x: number, y: number) {
@@ -108,6 +146,91 @@ class Store {
 
   requestLaunch(power: number) {
     this.setState(s => ({ launch: { tick: s.launch.tick + 1, power } }));
+  }
+
+  setWeatherMode(weatherMode: WeatherMode) {
+    this.setState({ weatherMode });
+  }
+
+  setVehicleSkin(vehicleSkin: VehicleSkin) {
+    this.setState({ vehicleSkin });
+  }
+
+  startTimeTrial() {
+    SOUNDS.raceStart(this.state.muted);
+    this.setState({
+      timeTrial: {
+        active: true,
+        currentRing: 0,
+        totalRings: 6,
+        startTime: Date.now(),
+        elapsed: 0,
+        bestTime: this.state.timeTrial.bestTime,
+        finished: false
+      }
+    });
+  }
+
+  passCheckpoint(ringIndex: number) {
+    const { timeTrial, muted } = this.state;
+    if (!timeTrial.active || timeTrial.finished) return;
+
+    if (ringIndex === timeTrial.currentRing) {
+      const nextRing = ringIndex + 1;
+      SOUNDS.checkpoint(ringIndex, muted);
+
+      if (nextRing >= timeTrial.totalRings) {
+        const finalTime = Math.round((Date.now() - timeTrial.startTime) / 10) / 100;
+        const newBest = timeTrial.bestTime ? Math.min(timeTrial.bestTime, finalTime) : finalTime;
+        SOUNDS.raceWin(muted);
+        this.setState({
+          timeTrial: {
+            ...timeTrial,
+            currentRing: nextRing,
+            elapsed: finalTime,
+            bestTime: newBest,
+            finished: true
+          }
+        });
+      } else {
+        this.setState({
+          timeTrial: {
+            ...timeTrial,
+            currentRing: nextRing,
+            elapsed: Math.round((Date.now() - timeTrial.startTime) / 10) / 100
+          }
+        });
+      }
+    }
+  }
+
+  stopTimeTrial() {
+    this.setState(s => ({
+      timeTrial: {
+        ...s.timeTrial,
+        active: false,
+        finished: false
+      }
+    }));
+  }
+
+  setTerminalOpen(open: boolean) {
+    this.setState({ terminalOpen: open });
+  }
+
+  setMatrixActive(active: boolean) {
+    this.setState({ matrixActive: active });
+  }
+
+  toggleSynthAudio() {
+    const currentlyPlaying = isAmbientSynthActive();
+    if (currentlyPlaying) {
+      stopAmbientSynth();
+      this.setState({ synthAudioPlaying: false });
+    } else {
+      startAmbientSynth(this.state.muted);
+      this.setState({ synthAudioPlaying: true });
+    }
   }
 
   reset() {
@@ -165,4 +288,3 @@ export function navigateToSection(target: string) {
 
   setTimeout(() => tryScroll(), 50);
 }
-

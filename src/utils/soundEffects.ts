@@ -54,6 +54,89 @@ export function playTone({ freq, to, dur = 0.15, type = 'triangle', gain = 0.05 
   }
 }
 
+// Procedural Ambient Synth Generator
+let ambientOscs: OscillatorNode[] = [];
+let ambientGain: GainNode | null = null;
+let ambientInterval: number | null = null;
+let isSynthPlaying = false;
+
+const SYNTH_CHORDS = [
+  [130.81, 196.00, 261.63, 329.63], // C maj7
+  [110.00, 164.81, 220.00, 261.63], // A min7
+  [146.83, 220.00, 293.66, 349.23], // D min7
+  [174.61, 261.63, 349.23, 440.00]  // F maj7
+];
+
+export function startAmbientSynth(isMuted = false): boolean {
+  if (isSynthPlaying) return true;
+  const ctx = getAudioContext();
+  if (!ctx) return false;
+
+  try {
+    ambientGain = ctx.createGain();
+    ambientGain.gain.setValueAtTime(0.001, ctx.currentTime);
+    if (!isMuted) {
+      ambientGain.gain.exponentialRampToValueAtTime(0.025, ctx.currentTime + 2);
+    }
+    ambientGain.connect(ctx.destination);
+
+    let chordIdx = 0;
+    const playChord = () => {
+      // Clear old oscillators
+      ambientOscs.forEach(o => {
+        try { o.stop(); o.disconnect(); } catch (e) {}
+      });
+      ambientOscs = [];
+
+      const chord = SYNTH_CHORDS[chordIdx % SYNTH_CHORDS.length];
+      chordIdx++;
+
+      chord.forEach(freq => {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        // Add subtle detune for warm analog feel
+        osc.detune.setValueAtTime((Math.random() - 0.5) * 12, ctx.currentTime);
+        if (ambientGain) osc.connect(ambientGain);
+        osc.start();
+        ambientOscs.push(osc);
+      });
+    };
+
+    playChord();
+    ambientInterval = window.setInterval(playChord, 6000);
+    isSynthPlaying = true;
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+export function stopAmbientSynth() {
+  if (!isSynthPlaying) return;
+  const ctx = getAudioContext();
+  if (ambientGain && ctx) {
+    try {
+      ambientGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.5);
+    } catch (e) {}
+  }
+  if (ambientInterval) {
+    clearInterval(ambientInterval);
+    ambientInterval = null;
+  }
+  setTimeout(() => {
+    ambientOscs.forEach(o => {
+      try { o.stop(); o.disconnect(); } catch (e) {}
+    });
+    ambientOscs = [];
+    isSynthPlaying = false;
+  }, 600);
+}
+
+export function isAmbientSynthActive(): boolean {
+  return isSynthPlaying;
+}
+
 export const SOUNDS = {
   discover(isMuted: boolean = false) {
     playTone({ freq: 523.25, to: 783.99, dur: 0.2, gain: 0.05 }, isMuted);
@@ -76,5 +159,34 @@ export const SOUNDS = {
 
   bump(intensity = 1, isMuted: boolean = false) {
     playTone({ freq: 120, to: 50, dur: 0.1, type: 'square', gain: Math.min(0.05, 0.015 * intensity) }, isMuted);
+  },
+
+  checkpoint(index: number, isMuted: boolean = false) {
+    const baseFreq = 587.33 + index * 110;
+    playTone({ freq: baseFreq, to: baseFreq * 1.5, dur: 0.18, type: 'sine', gain: 0.06 }, isMuted);
+  },
+
+  raceStart(isMuted: boolean = false) {
+    playTone({ freq: 440, to: 880, dur: 0.2, type: 'triangle', gain: 0.06 }, isMuted);
+  },
+
+  raceWin(isMuted: boolean = false) {
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+      setTimeout(() => {
+        playTone({ freq, to: freq * 1.25, dur: 0.25, type: 'triangle', gain: 0.06 }, isMuted);
+      }, idx * 120);
+    });
+  },
+
+  terminalKey(isMuted: boolean = false) {
+    playTone({ freq: 1200 + Math.random() * 400, to: 600, dur: 0.03, type: 'sine', gain: 0.015 }, isMuted);
+  },
+
+  terminalSuccess(isMuted: boolean = false) {
+    playTone({ freq: 659.25, to: 1318.51, dur: 0.15, type: 'sine', gain: 0.04 }, isMuted);
+  },
+
+  terminalError(isMuted: boolean = false) {
+    playTone({ freq: 220, to: 110, dur: 0.2, type: 'sawtooth', gain: 0.04 }, isMuted);
   }
 };

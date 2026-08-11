@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Gamepad2, Menu, X } from 'lucide-react';
+import { Moon, Sun, Gamepad2, Menu, X, Terminal } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { worldStore } from '../context/World3DState';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
@@ -71,6 +71,20 @@ export const Navbar: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2.5">
+          {/* Terminal Console Button */}
+          <button
+            type="button"
+            onClick={() => worldStore.setTerminalOpen(true)}
+            className="p-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-muted)] hover:text-cyan-400 hover:scale-105 transition-all shadow-sm flex items-center gap-1.5"
+            aria-label="Open developer terminal"
+            title="Open Developer Terminal (Ctrl+K or ~)"
+          >
+            <Terminal size={17} />
+            <span className="hidden lg:inline text-[10px] font-mono font-extrabold px-1.5 py-0.5 rounded bg-black/10 dark:bg-white/10 text-slate-400">
+              ⌘K
+            </span>
+          </button>
+
           {/* Theme Toggle Button */}
           <button
             type="button"
