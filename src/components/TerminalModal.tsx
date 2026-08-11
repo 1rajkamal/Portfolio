@@ -13,10 +13,12 @@ import {
   FolderGit2,
   Award,
   Layers,
-  Send
+  Send,
+  Hand
 } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { worldStore } from '../context/World3DState';
+import { jarvisStore } from '../context/JarvisVisionState';
 import { useTheme } from '../context/ThemeContext';
 import { SOUNDS } from '../utils/soundEffects';
 
@@ -44,6 +46,7 @@ const WELCOME_BANNER = `
 
 const QUICK_COMMANDS = [
   { label: 'help', icon: HelpCircle, color: '#38bdf8' },
+  { label: 'jarvis', icon: Hand, color: '#06b6d4' },
   { label: 'about', icon: Sparkles, color: '#818cf8' },
   { label: 'skills', icon: Layers, color: '#10b981' },
   { label: 'projects', icon: FolderGit2, color: '#ec4899' },
@@ -124,6 +127,7 @@ export const TerminalModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
               <div><span className="text-emerald-400 font-bold">contact</span> : Transmission links & email</div>
               <div><span className="text-emerald-400 font-bold">resume</span> : Download official PDF resume</div>
               <div><span className="text-pink-400 font-bold">3d</span> / <span className="text-pink-400 font-bold">rover</span> : Launch 3D Cyber World</div>
+              <div><span className="text-cyan-400 font-bold">jarvis</span> / <span className="text-cyan-400 font-bold">vision</span> : Hologram Hand Tracking AI Mode</div>
               <div><span className="text-pink-400 font-bold">matrix</span> : Toggle Neural Matrix Stream</div>
               <div><span className="text-amber-400 font-bold">theme [dark|light]</span> : Switch color scheme</div>
               <div><span className="text-amber-400 font-bold">whoami</span> : Explorer identity check</div>
@@ -303,6 +307,20 @@ export const TerminalModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
         response = (
           <div className="text-xs text-emerald-400 font-mono">
             🟢 Neural Matrix Stream Launched. Press ESC to return.
+          </div>
+        );
+        break;
+
+      case 'jarvis':
+      case 'vision':
+      case 'hand':
+        SOUNDS.terminalSuccess();
+        resType = 'success';
+        onClose();
+        jarvisStore.setActive(true);
+        response = (
+          <div className="text-xs text-cyan-300 font-mono">
+            🧤 Initializing Jarvis Holographic Vision Interface...
           </div>
         );
         break;

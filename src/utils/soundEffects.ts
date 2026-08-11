@@ -188,5 +188,28 @@ export const SOUNDS = {
 
   terminalError(isMuted: boolean = false) {
     playTone({ freq: 220, to: 110, dur: 0.2, type: 'sawtooth', gain: 0.04 }, isMuted);
+  },
+
+  jarvisOnline(isMuted: boolean = false) {
+    [440, 880, 1320, 1760].forEach((freq, idx) => {
+      setTimeout(() => {
+        playTone({ freq, to: freq * 1.15, dur: 0.12, type: 'sine', gain: 0.045 }, isMuted);
+      }, idx * 65);
+    });
+  },
+
+  jarvisPinch(isMuted: boolean = false) {
+    playTone({ freq: 1760, to: 2640, dur: 0.08, type: 'sine', gain: 0.05 }, isMuted);
+    setTimeout(() => {
+      playTone({ freq: 2640, to: 3520, dur: 0.06, type: 'triangle', gain: 0.04 }, isMuted);
+    }, 40);
+  },
+
+  jarvisScroll(isMuted: boolean = false) {
+    playTone({ freq: 600, to: 900, dur: 0.05, type: 'sine', gain: 0.02 }, isMuted);
+  },
+
+  jarvisFist(isMuted: boolean = false) {
+    playTone({ freq: 300, to: 150, dur: 0.18, type: 'triangle', gain: 0.05 }, isMuted);
   }
 };

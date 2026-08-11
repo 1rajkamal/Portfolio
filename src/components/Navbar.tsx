@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Gamepad2, Menu, X, Terminal } from 'lucide-react';
+import { Moon, Sun, Gamepad2, Menu, X, Terminal, Hand } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { worldStore } from '../context/World3DState';
+import { jarvisStore, useJarvisStore } from '../context/JarvisVisionState';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 
 export const Navbar: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
+  const isJarvisActive = useJarvisStore(s => s.isActive);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -71,6 +73,27 @@ export const Navbar: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2.5">
+          {/* Jarvis AI Hologram Mode Button */}
+          <button
+            type="button"
+            onClick={() => jarvisStore.toggleActive()}
+            className={`px-3 py-2 rounded-2xl border text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 ${
+              isJarvisActive
+                ? 'bg-cyan-500/20 border-cyan-400 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)] scale-105'
+                : 'bg-[var(--surface)] border-[var(--border-card)] text-[var(--text-muted)] hover:text-cyan-400 hover:scale-105'
+            }`}
+            aria-label="Toggle Jarvis Hand Tracking AI Mode"
+            title="Toggle Jarvis AI Hand Tracking Mode (Touchless Gestures)"
+          >
+            <Hand size={15} className={isJarvisActive ? 'animate-pulse text-cyan-400' : 'text-cyan-400'} />
+            <span className="hidden sm:inline">Jarvis</span>
+            <span className={`px-1.5 py-0.5 text-[9px] uppercase rounded-full font-extrabold ${
+              isJarvisActive ? 'bg-cyan-400 text-slate-950 animate-pulse' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+            }`}>
+              Vision
+            </span>
+          </button>
+
           {/* Terminal Console Button */}
           <button
             type="button"

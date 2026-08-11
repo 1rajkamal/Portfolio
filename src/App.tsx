@@ -15,6 +15,7 @@ import { ScrollColorBackdrop } from './components/ScrollColorBackdrop';
 import { WorldCanvas } from './components/3d/WorldCanvas';
 import { TerminalModal } from './components/TerminalModal';
 import { MatrixRain } from './components/MatrixRain';
+import { JarvisHoloHUD } from './components/JarvisHoloHUD';
 import { worldStore, useWorldStore } from './context/World3DState';
 
 export const AppContent: React.FC = () => {
@@ -102,6 +103,9 @@ export const AppContent: React.FC = () => {
 
       {/* Fullscreen Neural Matrix Rain Mode */}
       {matrixActive && <MatrixRain />}
+
+      {/* Jarvis AI Holographic Vision Hand Tracking Engine */}
+      <JarvisHoloHUD />
     </>
   );
 };
