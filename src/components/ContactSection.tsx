@@ -176,7 +176,7 @@ export const ContactSection: React.FC = () => {
                     required
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Alex Smith"
+                    placeholder="e.g. Raj Kamal"
                     className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent)] transition-colors shadow-sm"
                   />
                 </div>
