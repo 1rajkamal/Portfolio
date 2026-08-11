@@ -52,9 +52,16 @@ function loadScript(src: string): Promise<void> {
   });
 }
 
-export const JarvisHoloHUD: React.FC = () => {
-  const { isActive, isMinimized, trackingStatus, gesture, cursorPos, isPinching, pinchProgress, fps, errorMessage } =
-    useJarvisStore();
+const JarvisHoloHUDInner: React.FC = () => {
+  const isActive = useJarvisStore(s => s.isActive);
+  const isMinimized = useJarvisStore(s => s.isMinimized);
+  const trackingStatus = useJarvisStore(s => s.trackingStatus);
+  const gesture = useJarvisStore(s => s.gesture);
+  const cursorPos = useJarvisStore(s => s.cursorPos);
+  const isPinching = useJarvisStore(s => s.isPinching);
+  const pinchProgress = useJarvisStore(s => s.pinchProgress);
+  const fps = useJarvisStore(s => s.fps);
+  const errorMessage = useJarvisStore(s => s.errorMessage);
   const is3DActive = useWorldStore(s => s.is3DActive);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -76,9 +83,15 @@ export const JarvisHoloHUD: React.FC = () => {
 
   // Trigger speech announcement on activation
   useEffect(() => {
-    if (isActive && 'speechSynthesis' in window) {
+    if (
+      isActive &&
+      typeof window !== 'undefined' &&
+      'speechSynthesis' in window &&
+      typeof (window as any).SpeechSynthesisUtterance !== 'undefined'
+    ) {
       try {
-        const utterance = new SpeechSynthesisUtterance('Jarvis vision interface initialized.');
+        const UtteranceClass = (window as any).SpeechSynthesisUtterance;
+        const utterance = new UtteranceClass('Jarvis vision interface initialized.');
         utterance.rate = 1.1;
         utterance.pitch = 0.95;
         utterance.volume = 0.6;
@@ -632,3 +645,24 @@ export const JarvisHoloHUD: React.FC = () => {
     </>
   );
 };
+
+// --- Isolated Error Boundary so Jarvis crash never white-pages the portfolio ---
+class JarvisErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { crashed: boolean }
+> {
+  state = { crashed: false };
+  static getDerivedStateFromError() { return { crashed: true }; }
+  componentDidCatch(e: Error) { console.warn('JarvisHoloHUD caught error:', e.message); }
+  render() {
+    if (this.state.crashed) return null;
+    return this.props.children;
+  }
+}
+
+export const JarvisHoloHUD: React.FC = () => (
+  <JarvisErrorBoundary>
+    <JarvisHoloHUDInner />
+  </JarvisErrorBoundary>
+);
+

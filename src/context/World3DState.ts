@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 import { SOUNDS, startAmbientSynth, stopAmbientSynth, isAmbientSynthActive } from '../utils/soundEffects';
 
 export type WeatherMode = 'midnight' | 'sunset' | 'matrix';
@@ -246,19 +246,12 @@ class Store {
 
 export const worldStore = new Store();
 
-// React hook to access world state in components
+// Official React 18 store hook with zero tearing and safe concurrent rendering
 export function useWorldStore<T>(selector?: (state: WorldState) => T): T {
-  const [slice, setSlice] = useState(() => (selector ? selector(worldStore.getState()) : (worldStore.getState() as unknown as T)));
-
-  useEffect(() => {
-    const unsubscribe = worldStore.subscribe(() => {
-      const current = selector ? selector(worldStore.getState()) : (worldStore.getState() as unknown as T);
-      setSlice(current);
-    });
-    return unsubscribe;
-  }, [selector]);
-
-  return slice;
+  return useSyncExternalStore(
+    cb => worldStore.subscribe(cb),
+    () => (selector ? selector(worldStore.getState()) : (worldStore.getState() as unknown as T))
+  );
 }
 
 // Global telemetry for speedometer & minimap

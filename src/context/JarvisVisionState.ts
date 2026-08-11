@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 import { SOUNDS } from '../utils/soundEffects';
 
 export type JarvisGesture = 'none' | 'pointer' | 'pinch' | 'scroll-up' | 'scroll-down' | 'fist' | 'rover-drive';
@@ -110,17 +110,8 @@ class JarvisVisionStore {
 export const jarvisStore = new JarvisVisionStore();
 
 export function useJarvisStore<T>(selector?: (state: JarvisVisionState) => T): T {
-  const [slice, setSlice] = useState(() =>
-    selector ? selector(jarvisStore.getState()) : (jarvisStore.getState() as unknown as T)
+  return useSyncExternalStore(
+    cb => jarvisStore.subscribe(cb),
+    () => (selector ? selector(jarvisStore.getState()) : (jarvisStore.getState() as unknown as T))
   );
-
-  useEffect(() => {
-    const unsubscribe = jarvisStore.subscribe(() => {
-      const current = selector ? selector(jarvisStore.getState()) : (jarvisStore.getState() as unknown as T);
-      setSlice(current);
-    });
-    return unsubscribe;
-  }, [selector]);
-
-  return slice;
 }

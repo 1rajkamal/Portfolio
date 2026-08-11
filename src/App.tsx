@@ -16,6 +16,7 @@ import { WorldCanvas } from './components/3d/WorldCanvas';
 import { TerminalModal } from './components/TerminalModal';
 import { MatrixRain } from './components/MatrixRain';
 import { JarvisHoloHUD } from './components/JarvisHoloHUD';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { worldStore, useWorldStore } from './context/World3DState';
 
 export const AppContent: React.FC = () => {
@@ -24,8 +25,8 @@ export const AppContent: React.FC = () => {
   const matrixActive = useWorldStore(s => s.matrixActive);
 
   useEffect(() => {
-    // Hash router check for #3d on page load
-    if (window.location.hash === '#3d' || window.location.pathname.includes('3d')) {
+    // Strict hash/pathname check for 3D world on initial load
+    if (window.location.hash === '#3d' || window.location.pathname === '/3d') {
       worldStore.setIs3DActive(true);
     }
 
@@ -112,11 +113,13 @@ export const AppContent: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <ThemeProvider>
-      <ScrollColorProvider>
-        <AppContent />
-      </ScrollColorProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <ScrollColorProvider>
+          <AppContent />
+        </ScrollColorProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 };
 
