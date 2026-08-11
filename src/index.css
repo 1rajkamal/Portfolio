@@ -18,17 +18,17 @@
 }
 
 .light {
-  /* Default Light: Crisp Warm Porcelain & Terracotta */
-  --bg: #FAF9F6;
+  /* Ultra-Crisp High-Contrast Light Theme for Mobile & Desktop */
+  --bg: #F8FAFC;
   --surface: #FFFFFF;
   --surface-hover: #F1F5F9;
-  --text-primary: #0F172A;
-  --text-muted: #475569;
-  --accent: #C1502E;
-  --accent-2: #0D9488;
-  --glow: rgba(193, 80, 46, 0.15);
-  --border-card: rgba(15, 23, 42, 0.08);
-  --border-card-hover: rgba(193, 80, 46, 0.4);
+  --text-primary: #020617; /* Slate 950 - deepest black for ultra-sharp readability */
+  --text-muted: #1E293B; /* Slate 800 - high contrast dark text, 0 wash-out */
+  --accent: #B91C1C; /* Crisp warm crimson */
+  --accent-2: #0D9488; /* Crisp emerald teal */
+  --glow: rgba(185, 28, 28, 0.15);
+  --border-card: rgba(15, 23, 42, 0.14);
+  --border-card-hover: rgba(185, 28, 28, 0.6);
 }
 
 body {
@@ -37,6 +37,11 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.light body {
+  background-color: #F8FAFC;
+  color: #020617;
 }
 
 /* Dynamic Scroll-Reactive Luxury Button */
@@ -80,7 +85,9 @@ body {
 }
 
 .light .glass-card {
-  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  background-color: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.05);
 }
 
 .glass-card:hover {
@@ -101,7 +108,9 @@ body {
 }
 
 .light .glass-panel {
-  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+  background-color: rgba(255, 255, 255, 0.96);
+  border-color: rgba(15, 23, 42, 0.14);
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
 /* Headings with Dynamic Accent Color Shift */
