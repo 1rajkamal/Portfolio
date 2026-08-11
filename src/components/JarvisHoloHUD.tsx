@@ -238,24 +238,36 @@ export const JarvisHoloHUD: React.FC = () => {
     const ringTip = landmarks[16];
     const pinkyTip = landmarks[20];
     const wrist = landmarks[0];
+    const middleKnuckle = landmarks[9];
 
-    // Mirror X coordinates for intuitive human interaction
+    // Distance/camera invariant hand scale
+    const palmScale = Math.max(0.05, Math.hypot(middleKnuckle.x - wrist.x, middleKnuckle.y - wrist.y));
+
+    // Mirror X coordinates and expand active range [0.10, 0.90] -> [0, 1] for effortless screen reach
     const mirroredX = 1 - indexTip.x;
-    const targetScreenX = mirroredX * window.innerWidth;
-    const targetScreenY = indexTip.y * window.innerHeight;
+    const clampedX = Math.max(0, Math.min(1, (mirroredX - 0.10) / 0.80));
+    const clampedY = Math.max(0, Math.min(1, (indexTip.y - 0.08) / 0.82));
 
-    // Smooth cursor interpolation (Lerp factor = 0.28 for high responsiveness)
-    smoothCursor.current.x += (targetScreenX - smoothCursor.current.x) * 0.28;
-    smoothCursor.current.y += (targetScreenY - smoothCursor.current.y) * 0.28;
+    const targetScreenX = clampedX * window.innerWidth;
+    const targetScreenY = clampedY * window.innerHeight;
+
+    // Smooth cursor interpolation (Lerp factor = 0.35 for snappy & fluid control)
+    smoothCursor.current.x += (targetScreenX - smoothCursor.current.x) * 0.35;
+    smoothCursor.current.y += (targetScreenY - smoothCursor.current.y) * 0.35;
 
     const curX = Math.round(smoothCursor.current.x);
     const curY = Math.round(smoothCursor.current.y);
 
-    // 1. Calculate Pinch (Thumb Tip to Index Tip Distance)
-    const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
-    const pinchThreshold = 0.065;
-    const isPinchingNow = pinchDist < pinchThreshold;
-    const progress = Math.max(0, Math.min(1, 1 - (pinchDist - 0.04) / 0.08));
+    // 1. Calculate Palm-Normalized Scale-Invariant Pinch Distance
+    const thumbIndexRawDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+    const thumbMiddleRawDist = Math.hypot(thumbTip.x - middleTip.x, thumbTip.y - middleTip.y);
+    const rawPinchDist = Math.min(thumbIndexRawDist, thumbMiddleRawDist);
+
+    const normalizedPinchRatio = rawPinchDist / palmScale;
+
+    // Scale-invariant threshold (0.36 ratio) + absolute fallback (0.09)
+    const isPinchingNow = normalizedPinchRatio < 0.36 || rawPinchDist < 0.09;
+    const progress = Math.max(0, Math.min(1, 1 - (normalizedPinchRatio - 0.20) / 0.35));
 
     // 2. Calculate Fist (all tips close to wrist)
     const avgTipDistToWrist =
@@ -264,9 +276,9 @@ export const JarvisHoloHUD: React.FC = () => {
         Math.hypot(ringTip.x - wrist.x, ringTip.y - wrist.y) +
         Math.hypot(pinkyTip.x - wrist.y, pinkyTip.y - wrist.y)) /
       4;
-    const isFist = avgTipDistToWrist < 0.22;
+    const isFist = avgTipDistToWrist < 0.24;
 
-    // 3. Calculate Scroll Gesture (Hand moved to upper or lower quarter of screen)
+    // 3. Calculate Gestures
     let activeGesture: JarvisGesture = 'pointer';
 
     if (isFist) {
@@ -283,23 +295,23 @@ export const JarvisHoloHUD: React.FC = () => {
       }
     } else if (isPinchingNow) {
       activeGesture = 'pinch';
-      // Trigger click on pinch down edge
+      // Trigger click on initial pinch down edge
       if (!lastPinchState.current) {
         SOUNDS.jarvisPinch(!soundEnabled);
         triggerHolographicClick(curX, curY);
         // Spawn holographic shockwave ripple
-        setRipples(r => [...r.slice(-4), { id: Date.now(), x: curX, y: curY }]);
+        setRipples(r => [...r.slice(-5), { id: Date.now(), x: curX, y: curY }]);
       }
-    } else if (indexTip.y < 0.22) {
+    } else if (indexTip.y < 0.18) {
       activeGesture = 'scroll-up';
-      if (now - lastScrollTime.current > 60) {
-        window.scrollBy({ top: -45, behavior: 'smooth' });
+      if (now - lastScrollTime.current > 45) {
+        window.scrollBy({ top: -55, behavior: 'smooth' });
         lastScrollTime.current = now;
       }
-    } else if (indexTip.y > 0.78) {
+    } else if (indexTip.y > 0.82) {
       activeGesture = 'scroll-down';
-      if (now - lastScrollTime.current > 60) {
-        window.scrollBy({ top: 45, behavior: 'smooth' });
+      if (now - lastScrollTime.current > 45) {
+        window.scrollBy({ top: 55, behavior: 'smooth' });
         lastScrollTime.current = now;
       }
     }
@@ -307,7 +319,6 @@ export const JarvisHoloHUD: React.FC = () => {
     // If inside 3D Rover World, use hand tilt for driving
     if (is3DActive) {
       activeGesture = 'rover-drive';
-      // Tilt X (-0.5 to 0.5 centered around 0.5)
       const steer = (mirroredX - 0.5) * 2.2;
       const throttle = -(indexTip.y - 0.5) * 2.2;
       worldStore.setJoy(
@@ -332,16 +343,89 @@ export const JarvisHoloHUD: React.FC = () => {
     );
   };
 
-  // Trigger element click under laser reticle
+  // Deep Z-Stack Holographic Element Click Dispatcher
   const triggerHolographicClick = (x: number, y: number) => {
     try {
-      const element = document.elementFromPoint(x, y) as HTMLElement;
-      if (element) {
-        // Find nearest clickable target (button, a, input, or parent)
-        const clickable = element.closest('button, a, input, textarea, [role="button"]') as HTMLElement || element;
-        clickable.click();
+      const elements = document.elementsFromPoint(x, y);
+      if (!elements || elements.length === 0) return;
+
+      // Filter out all HUD elements
+      const nonHudElements = elements.filter(el => el && !el.closest('[data-jarvis-hud]'));
+      if (nonHudElements.length === 0) return;
+
+      // Priority 1: Search the full element z-stack for any interactive element or ancestor
+      let clickTarget: HTMLElement | null = null;
+
+      for (const el of nonHudElements) {
+        const interactive = (el as Element).closest(
+          'button, a, input, textarea, select, [role="button"], [role="link"], [role="tab"], [tabindex], label, summary, [onclick], .cursor-pointer, .glass-card, .btn-luxury, .btn-primary, [data-interactive]'
+        ) as HTMLElement | null;
+
+        if (interactive) {
+          clickTarget = interactive;
+          break;
+        }
       }
-    } catch (e) {}
+
+      // Priority 2: Fallback to the topmost non-HUD element
+      if (!clickTarget) {
+        clickTarget = nonHudElements[0] as HTMLElement;
+      }
+
+      const eventOptions: MouseEventInit = {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        detail: 1,
+        clientX: x,
+        clientY: y,
+        screenX: x,
+        screenY: y,
+        button: 0,
+        buttons: 1
+      };
+
+      // 1. Dispatch full pointer down & mouse down sequence
+      clickTarget.dispatchEvent(new PointerEvent('pointerdown', { ...eventOptions, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
+      clickTarget.dispatchEvent(new MouseEvent('mousedown', eventOptions));
+
+      // 2. Focus element if applicable
+      if (typeof clickTarget.focus === 'function') {
+        try { clickTarget.focus(); } catch {}
+      }
+
+      // 3. Dispatch pointer up & mouse up
+      clickTarget.dispatchEvent(new PointerEvent('pointerup', { ...eventOptions, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
+      clickTarget.dispatchEvent(new MouseEvent('mouseup', eventOptions));
+
+      // 4. Dispatch native click event
+      clickTarget.dispatchEvent(new MouseEvent('click', eventOptions));
+
+      // 5. Invoke native .click() method
+      if (typeof clickTarget.click === 'function') {
+        clickTarget.click();
+      }
+
+      // 6. Handle link href navigation
+      const anchor = clickTarget.closest('a') as HTMLAnchorElement | null;
+      if (anchor) {
+        if (anchor.hash && anchor.hash.startsWith('#')) {
+          const targetId = anchor.hash.slice(1);
+          const el = document.getElementById(targetId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        } else if (anchor.href && !anchor.href.includes('#')) {
+          if (anchor.target === '_blank') {
+            window.open(anchor.href, '_blank', 'noopener,noreferrer');
+          } else {
+            window.location.href = anchor.href;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Jarvis click dispatch error:', err);
+    }
   };
 
   if (!isActive) return null;
@@ -350,6 +434,7 @@ export const JarvisHoloHUD: React.FC = () => {
     <>
       {/* 1. Holographic Floating Laser Reticle on Screen */}
       <div
+        data-jarvis-hud
         className="fixed pointer-events-none z-[9999] transition-transform duration-75 ease-out"
         style={{
           left: `${cursorPos.x}px`,
@@ -383,12 +468,14 @@ export const JarvisHoloHUD: React.FC = () => {
             />
           </div>
 
-          {/* Hologram Coordinate Readout */}
-          <div className="absolute top-8 left-8 whitespace-nowrap px-2 py-0.5 rounded bg-black/75 border border-cyan-500/40 text-[9px] font-mono font-bold text-cyan-300 backdrop-blur-sm shadow-md">
+          {/* Hologram Coordinate & Status Readout */}
+          <div className="absolute top-8 left-8 whitespace-nowrap px-2 py-0.5 rounded bg-black/85 border border-cyan-500/40 text-[9px] font-mono font-bold text-cyan-300 backdrop-blur-sm shadow-md flex items-center gap-1.5">
             <span>JARVIS [X:{cursorPos.x} Y:{cursorPos.y}]</span>
-            {gesture !== 'none' && (
-              <span className="ml-1 text-amber-400 uppercase">· {gesture}</span>
-            )}
+            {isPinching ? (
+              <span className="text-amber-300 font-extrabold uppercase animate-pulse">⚡ CLICK</span>
+            ) : gesture !== 'none' ? (
+              <span className="text-cyan-400 uppercase">· {gesture}</span>
+            ) : null}
           </div>
         </div>
       </div>
@@ -397,6 +484,7 @@ export const JarvisHoloHUD: React.FC = () => {
       {ripples.map(r => (
         <div
           key={r.id}
+          data-jarvis-hud
           className="fixed pointer-events-none z-[9998] rounded-full border-2 border-amber-400 animate-ping"
           style={{
             left: `${r.x}px`,
@@ -409,7 +497,7 @@ export const JarvisHoloHUD: React.FC = () => {
       ))}
 
       {/* 3. Floating Holographic PiP Corner HUD */}
-      <div className="fixed bottom-6 right-6 z-[9990] flex flex-col items-end gap-3 pointer-events-auto">
+      <div data-jarvis-hud className="fixed bottom-6 right-6 z-[9990] flex flex-col items-end gap-3 pointer-events-auto">
         {/* Sci-Fi Instructions Banner */}
         {showInstructions && !isMinimized && (
           <div className="glass-panel p-3.5 rounded-2xl border border-cyan-500/40 max-w-xs shadow-2xl backdrop-blur-2xl text-xs font-mono animate-fadeIn relative">
