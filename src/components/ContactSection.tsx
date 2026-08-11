@@ -146,12 +146,12 @@ export const ContactSection: React.FC = () => {
             </p>
 
             {submitted ? (
-              <div className="mt-8 p-6 rounded-2xl bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-500/40 text-center animate-fadeIn">
-                <CheckCircle2 size={40} className="text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
-                <h4 className="text-base font-extrabold text-slate-900 dark:text-white">
+              <div className="mt-8 p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center animate-fadeIn">
+                <CheckCircle2 size={40} className="text-emerald-500 mx-auto mb-2" />
+                <h4 className="text-base font-extrabold text-[var(--text-primary)]">
                   Message Sent Successfully!
                 </h4>
-                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+                <p className="text-xs text-[var(--text-muted)] mt-1 font-medium">
                   Thank you for reaching out, {formData.name}. I'll reply to {formData.email} soon.
                 </p>
                 <button
@@ -177,7 +177,7 @@ export const ContactSection: React.FC = () => {
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Raj Kamal"
-                    className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent)] transition-colors shadow-sm"
+                    className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/70 text-sm focus:outline-none focus:border-[var(--accent)] transition-colors shadow-sm"
                   />
                 </div>
 
@@ -191,7 +191,7 @@ export const ContactSection: React.FC = () => {
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
                     placeholder="name@company.com"
-                    className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent)] transition-colors shadow-sm"
+                    className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/70 text-sm focus:outline-none focus:border-[var(--accent)] transition-colors shadow-sm"
                   />
                 </div>
 
@@ -204,7 +204,7 @@ export const ContactSection: React.FC = () => {
                     value={formData.subject}
                     onChange={e => setFormData({ ...formData, subject: e.target.value })}
                     placeholder="Project Inquiry / Job Opportunity"
-                    className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent)] transition-colors shadow-sm"
+                    className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/70 text-sm focus:outline-none focus:border-[var(--accent)] transition-colors shadow-sm"
                   />
                 </div>
 
@@ -218,7 +218,7 @@ export const ContactSection: React.FC = () => {
                     value={formData.message}
                     onChange={e => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Hi Raj, let's discuss..."
-                    className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent)] transition-colors shadow-sm"
+                    className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/70 text-sm focus:outline-none focus:border-[var(--accent)] transition-colors shadow-sm"
                   />
                 </div>
 

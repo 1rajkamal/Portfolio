@@ -19,8 +19,8 @@ export const DARK_ZONES: ZoneColorConfig[] = [
     id: 'home',
     bg: '#0A0A0F',
     surface: '#14141C',
-    textPrimary: '#F5F5F0',
-    textMuted: '#9A9AA5',
+    textPrimary: '#F8FAFC',
+    textMuted: '#94A3B8',
     accent: '#D4AF37',      // Muted Gold
     accent2: '#7C5CFF',     // Electric Violet
     glow: 'rgba(212, 175, 55, 0.22)'
@@ -30,8 +30,8 @@ export const DARK_ZONES: ZoneColorConfig[] = [
     id: 'about',
     bg: '#0E0E12',
     surface: '#17171F',
-    textPrimary: '#F2F1F7',
-    textMuted: '#9C9AA8',
+    textPrimary: '#F8FAFC',
+    textMuted: '#94A3B8',
     accent: '#A78BFA',      // Soft Violet
     accent2: '#FF6B9D',     // Rose Magenta
     glow: 'rgba(167, 139, 250, 0.22)'
@@ -41,8 +41,8 @@ export const DARK_ZONES: ZoneColorConfig[] = [
     id: 'skills',
     bg: '#0B0F0E',
     surface: '#121A18',
-    textPrimary: '#EAF5F0',
-    textMuted: '#8FA69C',
+    textPrimary: '#F8FAFC',
+    textMuted: '#94A3B8',
     accent: '#2ED9A0',      // Emerald Green
     accent2: '#FFB86B',     // Warm Amber
     glow: 'rgba(46, 217, 160, 0.22)'
@@ -52,8 +52,8 @@ export const DARK_ZONES: ZoneColorConfig[] = [
     id: 'projects',
     bg: '#080D1A',
     surface: '#101726',
-    textPrimary: '#F0F5FA',
-    textMuted: '#8C9EB5',
+    textPrimary: '#F8FAFC',
+    textMuted: '#94A3B8',
     accent: '#38BDF8',      // Ice Cyan
     accent2: '#818CF8',     // Royal Indigo
     glow: 'rgba(56, 189, 248, 0.22)'
@@ -63,8 +63,8 @@ export const DARK_ZONES: ZoneColorConfig[] = [
     id: 'certifications',
     bg: '#0F0D15',
     surface: '#191524',
-    textPrimary: '#F6F2FA',
-    textMuted: '#9E94AB',
+    textPrimary: '#F8FAFC',
+    textMuted: '#94A3B8',
     accent: '#C084FC',      // Amethyst
     accent2: '#FBBF24',     // Warm Gold
     glow: 'rgba(192, 132, 252, 0.22)'
@@ -74,80 +74,80 @@ export const DARK_ZONES: ZoneColorConfig[] = [
     id: 'contact',
     bg: '#0A0A0F',
     surface: '#14141C',
-    textPrimary: '#F5F5F0',
-    textMuted: '#9A9AA5',
+    textPrimary: '#F8FAFC',
+    textMuted: '#94A3B8',
     accent: '#D4AF37',      // Muted Gold
     accent2: '#2ED9A0',     // Emerald
     glow: 'rgba(212, 175, 55, 0.22)'
   }
 ];
 
-// Light Mode Curated Palette Zones (Cream & Terracotta + Sage & Deep Teal)
+// Light Mode Curated Palette Zones (Porcelain, Terracotta, Sage, Teal)
 export const LIGHT_ZONES: ZoneColorConfig[] = [
-  // 1. Hero: Cream & Terracotta (#FAF6F0 + Terracotta & Teal)
+  // 1. Hero: Soft Porcelain & Terracotta
   {
     id: 'home',
-    bg: '#FAF6F0',
+    bg: '#FAF9F6',
     surface: '#FFFFFF',
-    textPrimary: '#2B2620',
-    textMuted: '#7A736A',
+    textPrimary: '#0F172A',
+    textMuted: '#475569',
     accent: '#C1502E',      // Terracotta
-    accent2: '#4A6C6F',     // Deep Teal
+    accent2: '#0D9488',     // Deep Teal
     glow: 'rgba(193, 80, 46, 0.15)'
   },
-  // 2. About: Warm Pearl (#F7F4EE + Terracotta & Warm Amber)
+  // 2. About: Warm Alabaster
   {
     id: 'about',
-    bg: '#F7F4EE',
+    bg: '#F8F6F0',
     surface: '#FFFFFF',
-    textPrimary: '#26221E',
-    textMuted: '#736D65',
-    accent: '#B44426',      // Terracotta
-    accent2: '#C97A3E',     // Amber Wood
+    textPrimary: '#0F172A',
+    textMuted: '#475569',
+    accent: '#B44426',      // Warm Terracotta
+    accent2: '#D97706',     // Amber
     glow: 'rgba(180, 68, 38, 0.15)'
   },
-  // 3. Skills: Sage Mist (#F2F7F4 + Deep Emerald & Ochre)
+  // 3. Skills: Sage Mist
   {
     id: 'skills',
-    bg: '#F2F7F4',
+    bg: '#F3F8F5',
     surface: '#FFFFFF',
-    textPrimary: '#1E2B25',
-    textMuted: '#687D74',
-    accent: '#1E8260',      // Deep Sage Emerald
-    accent2: '#B87333',     // Copper
-    glow: 'rgba(30, 130, 96, 0.15)'
+    textPrimary: '#0F172A',
+    textMuted: '#475569',
+    accent: '#059669',      // Deep Sage Emerald
+    accent2: '#D97706',     // Warm Amber
+    glow: 'rgba(5, 150, 105, 0.15)'
   },
-  // 4. Projects: Nordic Frost (#F0F5F8 + Deep Teal & Cobalt)
+  // 4. Projects: Nordic Frost
   {
     id: 'projects',
-    bg: '#F0F5F8',
+    bg: '#F1F6FA',
     surface: '#FFFFFF',
-    textPrimary: '#1B252E',
-    textMuted: '#657787',
+    textPrimary: '#0F172A',
+    textMuted: '#475569',
     accent: '#2563EB',      // Royal Blue
     accent2: '#0D9488',     // Deep Teal
     glow: 'rgba(37, 99, 235, 0.15)'
   },
-  // 5. Certificates & Hackathons: Warm Linen (#F9F5F0 + Terracotta & Slate Teal)
+  // 5. Certificates & Hackathons: Warm Linen
   {
     id: 'certifications',
-    bg: '#F9F5F0',
+    bg: '#F9F6F0',
     surface: '#FFFFFF',
-    textPrimary: '#2B2620',
-    textMuted: '#7A736A',
-    accent: '#C1502E',      // Terracotta
-    accent2: '#4A6C6F',     // Deep Teal
-    glow: 'rgba(193, 80, 46, 0.15)'
+    textPrimary: '#0F172A',
+    textMuted: '#475569',
+    accent: '#7C3AED',      // Royal Purple
+    accent2: '#D97706',     // Warm Gold
+    glow: 'rgba(124, 58, 237, 0.15)'
   },
-  // 6. Contact: Cream Pearl (#FAF6F0 + Terracotta & Teal)
+  // 6. Contact: Clean Porcelain
   {
     id: 'contact',
-    bg: '#FAF6F0',
+    bg: '#FAF9F6',
     surface: '#FFFFFF',
-    textPrimary: '#2B2620',
-    textMuted: '#7A736A',
+    textPrimary: '#0F172A',
+    textMuted: '#475569',
     accent: '#C1502E',      // Terracotta
-    accent2: '#4A6C6F',     // Deep Teal
+    accent2: '#0D9488',     // Deep Teal
     glow: 'rgba(193, 80, 46, 0.15)'
   }
 ];

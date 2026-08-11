@@ -70,7 +70,7 @@ export const AboutSection: React.FC = () => {
                 onClick={() => setChoice('giveup')}
                 className={`px-5 py-2 rounded-2xl text-xs font-extrabold transition-all ${
                   choice === 'giveup'
-                    ? 'bg-black/40 text-white border border-white/20'
+                    ? 'bg-black/10 dark:bg-black/40 text-[var(--text-primary)] border border-[var(--border-card)]'
                     : 'bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border-card)] hover:text-[var(--text-primary)]'
                 }`}
               >

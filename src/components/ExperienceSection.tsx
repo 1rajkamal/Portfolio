@@ -9,14 +9,14 @@ export const ExperienceSection: React.FC = () => {
     <section id="experience" className="py-16 sm:py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-200 dark:border-cyan-800 text-cyan-600 dark:text-cyan-400 text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] text-xs font-extrabold uppercase tracking-wider">
             <Sparkles size={13} />
             Career & Research
           </div>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold font-display text-slate-900 dark:text-white">
-            Practical <span className="text-gradient">Experience & Projects</span>
+          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black font-display text-[var(--text-primary)]">
+            Practical <span className="text-accent-gradient">Experience & Projects</span>
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-400">
+          <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)]">
             Proven track record of engineering predictive systems, generative AI assistants, and high-performance data analytics platforms.
           </p>
         </div>
@@ -26,31 +26,31 @@ export const ExperienceSection: React.FC = () => {
           {experience.map((item: ExperienceItem, idx: number) => (
             <div
               key={idx}
-              className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden group hover:scale-[1.01] transition-all"
+              className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden group hover:scale-[1.01] transition-all border border-[var(--border-card)]"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-2xl bg-cyan-600 text-white shadow-md">
+                  <div className="p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] shadow-sm">
                     <Briefcase size={22} />
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white">
+                    <h3 className="font-display font-extrabold text-xl text-[var(--text-primary)]">
                       {item.role}
                     </h3>
-                    <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+                    <p className="text-xs font-bold text-[var(--accent)]">
                       {item.company}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <div className="flex items-center gap-3 text-xs font-bold text-[var(--text-muted)]">
                   <span className="flex items-center gap-1">
-                    <Calendar size={14} className="text-cyan-500" />
+                    <Calendar size={14} className="text-[var(--accent)]" />
                     {item.period}
                   </span>
                   <span>·</span>
                   <span className="flex items-center gap-1">
-                    <MapPin size={14} className="text-cyan-500" />
+                    <MapPin size={14} className="text-[var(--accent)]" />
                     {item.location}
                   </span>
                 </div>
@@ -59,20 +59,20 @@ export const ExperienceSection: React.FC = () => {
               {/* Responsibilities & Achievements */}
               <div className="mt-6 space-y-3">
                 {item.points.map((point, i) => (
-                  <div key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-                    <CheckCircle2 size={16} className="text-cyan-500 shrink-0 mt-0.5" />
+                  <div key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-[var(--text-primary)]">
+                    <CheckCircle2 size={16} className="text-[var(--accent)] shrink-0 mt-0.5" />
                     <span>{point}</span>
                   </div>
                 ))}
               </div>
 
               {/* Technologies */}
-              <div className="mt-6 pt-5 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold text-slate-400 mr-2">Key Tech:</span>
+              <div className="mt-6 pt-5 border-t border-[var(--border-card)] flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold text-[var(--text-muted)] mr-2">Key Tech:</span>
                 {item.technologies.map(tech => (
                   <span
                     key={tech}
-                    className="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                    className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border-card)]"
                   >
                     {tech}
                   </span>
