@@ -3,21 +3,18 @@ import {
   X,
   Minimize2,
   Maximize2,
-  Eye,
-  Hand,
   Volume2,
   VolumeX,
   Sparkles,
   Zap,
   ShieldCheck,
-  RotateCcw,
-  Compass
+  MousePointerClick
 } from 'lucide-react';
 import { jarvisStore, useJarvisStore, JarvisGesture } from '../context/JarvisVisionState';
 import { worldStore, useWorldStore } from '../context/World3DState';
 import { SOUNDS } from '../utils/soundEffects';
 
-// MediaPipe Hands Landmark Connection Pairs
+// MediaPipe Hands Landmark Connection Pairs for futuristic laser skeleton
 const HAND_CONNECTIONS = [
   // Thumb
   [0, 1], [1, 2], [2, 3], [3, 4],
@@ -36,7 +33,6 @@ const HAND_CONNECTIONS = [
 const MEDIAPIPE_HANDS_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js';
 const MEDIAPIPE_CAMERA_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js';
 
-// Load script utility
 function loadScript(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
     if (document.querySelector(`script[src="${src}"]`)) {
@@ -73,8 +69,23 @@ const JarvisHoloHUDInner: React.FC = () => {
   const [showInstructions, setShowInstructions] = useState(true);
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
-  // Smooth cursor smoothing state
-  const smoothCursor = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  // Dwell auto-click state
+  const [dwellProgress, setDwellProgress] = useState<number>(0);
+  const dwellTimerRef = useRef<{ lastX: number; lastY: number; startTime: number; triggered: boolean }>({
+    lastX: 0,
+    lastY: 0,
+    startTime: 0,
+    triggered: false
+  });
+
+  // Keep mutable state in refs so camera loop closure is always fresh
+  const is3DActiveRef = useRef(is3DActive);
+  const soundEnabledRef = useRef(soundEnabled);
+  useEffect(() => { is3DActiveRef.current = is3DActive; }, [is3DActive]);
+  useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
+
+  // Motion smoothing state
+  const smoothCursor = useRef({ x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 });
   const lastScrollTime = useRef<number>(0);
   const lastPinchState = useRef<boolean>(false);
   const lastFistTime = useRef<number>(0);
@@ -91,19 +102,18 @@ const JarvisHoloHUDInner: React.FC = () => {
     ) {
       try {
         const UtteranceClass = (window as any).SpeechSynthesisUtterance;
-        const utterance = new UtteranceClass('Jarvis vision interface initialized.');
+        const utterance = new UtteranceClass('Jarvis vision interface active.');
         utterance.rate = 1.1;
         utterance.pitch = 0.95;
-        utterance.volume = 0.6;
+        utterance.volume = 0.5;
         window.speechSynthesis.speak(utterance);
       } catch (e) {}
     }
   }, [isActive]);
 
-  // Main Hand Tracking Initialization
+  // MediaPipe Hand Tracking Setup
   useEffect(() => {
     if (!isActive) {
-      // Clean up camera & model
       if (cameraInstanceRef.current) {
         try { cameraInstanceRef.current.stop(); } catch (e) {}
         cameraInstanceRef.current = null;
@@ -120,7 +130,6 @@ const JarvisHoloHUDInner: React.FC = () => {
     async function initMediaPipe() {
       try {
         jarvisStore.setTrackingStatus('loading');
-        // Load MediaPipe scripts dynamically
         await Promise.all([
           loadScript(MEDIAPIPE_HANDS_CDN),
           loadScript(MEDIAPIPE_CAMERA_CDN)
@@ -148,7 +157,7 @@ const JarvisHoloHUDInner: React.FC = () => {
 
         hands.onResults((results: any) => {
           if (!isMounted) return;
-          handleHandResults(results);
+          processHandFrame(results);
         });
 
         handsInstanceRef.current = hands;
@@ -192,9 +201,109 @@ const JarvisHoloHUDInner: React.FC = () => {
     };
   }, [isActive]);
 
-  // Process Hand Landmarks and Detect Gestures
-  const handleHandResults = (results: any) => {
-    // FPS calculation
+  // Robust Element Click Dispatcher
+  const executeHolographicClick = (x: number, y: number) => {
+    try {
+      const elements = document.elementsFromPoint(x, y);
+      if (!elements || elements.length === 0) return;
+
+      // Filter out all HUD elements
+      const candidates = elements.filter(el => el && !el.closest('[data-jarvis-hud]'));
+      if (candidates.length === 0) return;
+
+      // Priority 1: Direct interactive elements
+      let clickTarget: HTMLElement | null = null;
+      for (const el of candidates) {
+        const direct = (el as Element).closest(
+          'button, a, input, textarea, select, [role="button"], [role="link"], [role="tab"], label, summary, [onclick], .btn-luxury, .btn-primary'
+        ) as HTMLElement | null;
+
+        if (direct) {
+          clickTarget = direct;
+          break;
+        }
+      }
+
+      // Priority 2: Custom clickable wrappers
+      if (!clickTarget) {
+        for (const el of candidates) {
+          const custom = (el as Element).closest('[tabindex], .cursor-pointer') as HTMLElement | null;
+          if (custom) {
+            clickTarget = custom;
+            break;
+          }
+        }
+      }
+
+      // Priority 3: Topmost non-HUD element
+      if (!clickTarget) {
+        clickTarget = candidates[0] as HTMLElement;
+      }
+
+      // Audio feedback
+      SOUNDS.jarvisPinch(!soundEnabledRef.current);
+
+      // Visual shockwave ripple
+      setRipples(prev => [...prev.slice(-5), { id: Date.now(), x, y }]);
+
+      // Complete synthetic event sequence
+      const eventOptions: MouseEventInit = {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        detail: 1,
+        clientX: x,
+        clientY: y,
+        screenX: x,
+        screenY: y,
+        button: 0,
+        buttons: 1
+      };
+
+      // Pointer & Mouse down
+      clickTarget.dispatchEvent(new PointerEvent('pointerdown', { ...eventOptions, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
+      clickTarget.dispatchEvent(new MouseEvent('mousedown', eventOptions));
+
+      if (typeof clickTarget.focus === 'function') {
+        try { clickTarget.focus(); } catch {}
+      }
+
+      // Pointer & Mouse up
+      clickTarget.dispatchEvent(new PointerEvent('pointerup', { ...eventOptions, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
+      clickTarget.dispatchEvent(new MouseEvent('mouseup', eventOptions));
+
+      // Click event
+      clickTarget.dispatchEvent(new MouseEvent('click', eventOptions));
+
+      // Native .click() execution
+      if (typeof clickTarget.click === 'function') {
+        clickTarget.click();
+      }
+
+      // Anchor smooth hash navigation
+      const anchor = clickTarget.closest('a') as HTMLAnchorElement | null;
+      if (anchor) {
+        if (anchor.hash && anchor.hash.startsWith('#')) {
+          const targetId = anchor.hash.slice(1);
+          const elem = document.getElementById(targetId);
+          if (elem) {
+            elem.scrollIntoView({ behavior: 'smooth' });
+          }
+        } else if (anchor.href && !anchor.href.includes('#')) {
+          if (anchor.target === '_blank') {
+            window.open(anchor.href, '_blank', 'noopener,noreferrer');
+          } else {
+            window.location.href = anchor.href;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Jarvis click execution error:', err);
+    }
+  };
+
+  // Main Landmark Processing Frame
+  const processHandFrame = (results: any) => {
     frameCountRef.current++;
     const now = Date.now();
     if (now - lastFpsTimeRef.current >= 1000) {
@@ -213,14 +322,16 @@ const JarvisHoloHUDInner: React.FC = () => {
 
     if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
       jarvisStore.setState({ gesture: 'none', trackingStatus: 'no-hand' });
+      setDwellProgress(0);
+      dwellTimerRef.current.startTime = 0;
       return;
     }
 
     const landmarks = results.multiHandLandmarks[0];
 
-    // Draw futuristic holographic laser bones
+    // Draw holographic bones
     ctx.lineWidth = 2.5;
-    ctx.strokeStyle = '#06B6D4'; // Cyberpunk Cyan
+    ctx.strokeStyle = '#06B6D4';
     ctx.shadowColor = '#06B6D4';
     ctx.shadowBlur = 10;
 
@@ -233,7 +344,7 @@ const JarvisHoloHUDInner: React.FC = () => {
       ctx.stroke();
     });
 
-    // Draw glowing joint nodes
+    // Draw glowing joint points
     landmarks.forEach((p: any, idx: number) => {
       ctx.beginPath();
       const isTip = [4, 8, 12, 16, 20].includes(idx);
@@ -244,7 +355,7 @@ const JarvisHoloHUDInner: React.FC = () => {
       ctx.fill();
     });
 
-    // Calculate Key Joints
+    // Key Landmarks
     const indexTip = landmarks[8];
     const thumbTip = landmarks[4];
     const middleTip = landmarks[12];
@@ -253,10 +364,10 @@ const JarvisHoloHUDInner: React.FC = () => {
     const wrist = landmarks[0];
     const middleKnuckle = landmarks[9];
 
-    // Distance/camera invariant hand scale
+    // Camera-invariant palm scale
     const palmScale = Math.max(0.05, Math.hypot(middleKnuckle.x - wrist.x, middleKnuckle.y - wrist.y));
 
-    // Mirror X coordinates and expand active range [0.10, 0.90] -> [0, 1] for effortless screen reach
+    // Screen mapping with expanded edge reach [0.10, 0.90] -> [0, 1]
     const mirroredX = 1 - indexTip.x;
     const clampedX = Math.max(0, Math.min(1, (mirroredX - 0.10) / 0.80));
     const clampedY = Math.max(0, Math.min(1, (indexTip.y - 0.08) / 0.82));
@@ -264,25 +375,24 @@ const JarvisHoloHUDInner: React.FC = () => {
     const targetScreenX = clampedX * window.innerWidth;
     const targetScreenY = clampedY * window.innerHeight;
 
-    // Smooth cursor interpolation (Lerp factor = 0.35 for snappy & fluid control)
+    // Responsive cursor smoothing
     smoothCursor.current.x += (targetScreenX - smoothCursor.current.x) * 0.35;
     smoothCursor.current.y += (targetScreenY - smoothCursor.current.y) * 0.35;
 
     const curX = Math.round(smoothCursor.current.x);
     const curY = Math.round(smoothCursor.current.y);
 
-    // 1. Calculate Palm-Normalized Scale-Invariant Pinch Distance
-    const thumbIndexRawDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
-    const thumbMiddleRawDist = Math.hypot(thumbTip.x - middleTip.x, thumbTip.y - middleTip.y);
-    const rawPinchDist = Math.min(thumbIndexRawDist, thumbMiddleRawDist);
+    // 1. Pinch Detection (Palm Normalized)
+    const thumbIndexDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+    const thumbMiddleDist = Math.hypot(thumbTip.x - middleTip.x, thumbTip.y - middleTip.y);
+    const minPinchDist = Math.min(thumbIndexDist, thumbMiddleDist);
+    const pinchRatio = minPinchDist / palmScale;
 
-    const normalizedPinchRatio = rawPinchDist / palmScale;
+    // Forgiving pinch threshold
+    const isPinchingNow = pinchRatio < 0.36 || minPinchDist < 0.09;
+    const progress = Math.max(0, Math.min(1, 1 - (pinchRatio - 0.20) / 0.35));
 
-    // Scale-invariant threshold (0.36 ratio) + absolute fallback (0.09)
-    const isPinchingNow = normalizedPinchRatio < 0.36 || rawPinchDist < 0.09;
-    const progress = Math.max(0, Math.min(1, 1 - (normalizedPinchRatio - 0.20) / 0.35));
-
-    // 2. Calculate Fist (all tips close to wrist)
+    // 2. Fist Detection
     const avgTipDistToWrist =
       (Math.hypot(indexTip.x - wrist.x, indexTip.y - wrist.y) +
         Math.hypot(middleTip.x - wrist.x, middleTip.y - wrist.y) +
@@ -291,16 +401,43 @@ const JarvisHoloHUDInner: React.FC = () => {
       4;
     const isFist = avgTipDistToWrist < 0.24;
 
-    // 3. Calculate Gestures
+    // 3. Dwell Hover Auto-Click Logic (Hold still on an element for 0.9s to auto-click)
+    const dwell = dwellTimerRef.current;
+    const moveDist = Math.hypot(curX - dwell.lastX, curY - dwell.lastY);
+
+    if (moveDist > 25) {
+      // Cursor moved significantly -> reset dwell timer
+      dwell.lastX = curX;
+      dwell.lastY = curY;
+      dwell.startTime = now;
+      dwell.triggered = false;
+      setDwellProgress(0);
+    } else if (!isPinchingNow && !isFist) {
+      // Cursor is steady -> charge dwell timer
+      const elapsed = now - dwell.startTime;
+      const dwellDuration = 900; // 0.9 seconds
+      const charge = Math.min(1, elapsed / dwellDuration);
+      setDwellProgress(charge);
+
+      if (charge >= 1 && !dwell.triggered) {
+        dwell.triggered = true;
+        executeHolographicClick(curX, curY);
+        setDwellProgress(0);
+        dwell.startTime = now + 400; // Cooldown
+      }
+    } else {
+      setDwellProgress(0);
+    }
+
+    // 4. Gesture Evaluation & Action Dispatch
     let activeGesture: JarvisGesture = 'pointer';
 
     if (isFist) {
       activeGesture = 'fist';
       if (now - lastFistTime.current > 1800) {
         lastFistTime.current = now;
-        SOUNDS.jarvisFist(!soundEnabled);
-        // Toggle 3D Rover mode or close modal
-        if (is3DActive) {
+        SOUNDS.jarvisFist(!soundEnabledRef.current);
+        if (is3DActiveRef.current) {
           worldStore.setIs3DActive(false);
         } else {
           worldStore.setTerminalOpen(false);
@@ -308,12 +445,8 @@ const JarvisHoloHUDInner: React.FC = () => {
       }
     } else if (isPinchingNow) {
       activeGesture = 'pinch';
-      // Trigger click on initial pinch down edge
       if (!lastPinchState.current) {
-        SOUNDS.jarvisPinch(!soundEnabled);
-        triggerHolographicClick(curX, curY);
-        // Spawn holographic shockwave ripple
-        setRipples(r => [...r.slice(-5), { id: Date.now(), x: curX, y: curY }]);
+        executeHolographicClick(curX, curY);
       }
     } else if (indexTip.y < 0.18) {
       activeGesture = 'scroll-up';
@@ -329,8 +462,8 @@ const JarvisHoloHUDInner: React.FC = () => {
       }
     }
 
-    // If inside 3D Rover World, use hand tilt for driving
-    if (is3DActive) {
+    // 3D Rover driving integration
+    if (is3DActiveRef.current) {
       activeGesture = 'rover-drive';
       const steer = (mirroredX - 0.5) * 2.2;
       const throttle = -(indexTip.y - 0.5) * 2.2;
@@ -356,105 +489,6 @@ const JarvisHoloHUDInner: React.FC = () => {
     );
   };
 
-  // Deep Z-Stack Holographic Element Click Dispatcher
-  const triggerHolographicClick = (x: number, y: number) => {
-    try {
-      const elements = document.elementsFromPoint(x, y);
-      if (!elements || elements.length === 0) return;
-
-      // Filter out all HUD elements
-      const nonHudElements = elements.filter(el => el && !el.closest('[data-jarvis-hud]'));
-      if (nonHudElements.length === 0) return;
-
-      // Priority 1: Search the full element z-stack for specific interactive controls first
-      let clickTarget: HTMLElement | null = null;
-
-      for (const el of nonHudElements) {
-        const directInteractive = (el as Element).closest(
-          'button, a, input, textarea, select, [role="button"], [role="link"], [role="tab"], label, summary, [onclick], .btn-luxury, .btn-primary'
-        ) as HTMLElement | null;
-
-        if (directInteractive) {
-          clickTarget = directInteractive;
-          break;
-        }
-      }
-
-      // Priority 2: Custom clickable card wrappers
-      if (!clickTarget) {
-        for (const el of nonHudElements) {
-          const customClickable = (el as Element).closest(
-            '[tabindex], .cursor-pointer'
-          ) as HTMLElement | null;
-
-          if (customClickable) {
-            clickTarget = customClickable;
-            break;
-          }
-        }
-      }
-
-      // Priority 3: Fallback to the topmost non-HUD element
-      if (!clickTarget) {
-        clickTarget = nonHudElements[0] as HTMLElement;
-      }
-
-      const eventOptions: MouseEventInit = {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-        detail: 1,
-        clientX: x,
-        clientY: y,
-        screenX: x,
-        screenY: y,
-        button: 0,
-        buttons: 1
-      };
-
-      // 1. Dispatch full pointer down & mouse down sequence
-      clickTarget.dispatchEvent(new PointerEvent('pointerdown', { ...eventOptions, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
-      clickTarget.dispatchEvent(new MouseEvent('mousedown', eventOptions));
-
-      // 2. Focus element if applicable
-      if (typeof clickTarget.focus === 'function') {
-        try { clickTarget.focus(); } catch {}
-      }
-
-      // 3. Dispatch pointer up & mouse up
-      clickTarget.dispatchEvent(new PointerEvent('pointerup', { ...eventOptions, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
-      clickTarget.dispatchEvent(new MouseEvent('mouseup', eventOptions));
-
-      // 4. Dispatch native click event
-      clickTarget.dispatchEvent(new MouseEvent('click', eventOptions));
-
-      // 5. Invoke native .click() method
-      if (typeof clickTarget.click === 'function') {
-        clickTarget.click();
-      }
-
-      // 6. Handle link href navigation
-      const anchor = clickTarget.closest('a') as HTMLAnchorElement | null;
-      if (anchor) {
-        if (anchor.hash && anchor.hash.startsWith('#')) {
-          const targetId = anchor.hash.slice(1);
-          const el = document.getElementById(targetId);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth' });
-          }
-        } else if (anchor.href && !anchor.href.includes('#')) {
-          if (anchor.target === '_blank') {
-            window.open(anchor.href, '_blank', 'noopener,noreferrer');
-          } else {
-            window.location.href = anchor.href;
-          }
-        }
-      }
-    } catch (err) {
-      console.warn('Jarvis click dispatch error:', err);
-    }
-  };
-
   if (!isActive) return null;
 
   return (
@@ -469,28 +503,47 @@ const JarvisHoloHUDInner: React.FC = () => {
           transform: 'translate(-50%, -50%)'
         }}
       >
-        {/* Concentric Rotating Hologram Rings */}
         <div className="relative flex items-center justify-center">
-          {/* Outer Ring with Ticks */}
+          {/* Outer Rotating Cyberpunk Ring */}
           <div
             className={`w-14 h-14 rounded-full border border-dashed transition-all duration-300 ${
-              isPinching
+              isPinching || dwellProgress > 0.6
                 ? 'border-amber-400 scale-75 rotate-90 shadow-[0_0_20px_rgba(245,158,11,0.9)]'
                 : 'border-cyan-400/80 animate-spin-slow shadow-[0_0_15px_rgba(6,182,212,0.6)]'
             }`}
           />
 
+          {/* Dwell Auto-Click Progress Ring */}
+          {dwellProgress > 0.05 && (
+            <svg className="absolute w-16 h-16 -rotate-90 pointer-events-none" viewBox="0 0 64 64">
+              <circle
+                cx="32"
+                cy="32"
+                r="28"
+                fill="none"
+                stroke="#F59E0B"
+                strokeWidth="3"
+                strokeDasharray="175.93"
+                strokeDashoffset={175.93 * (1 - dwellProgress)}
+                strokeLinecap="round"
+                className="transition-all duration-75"
+              />
+            </svg>
+          )}
+
           {/* Inner Target Crosshair */}
           <div
             className={`absolute w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
-              isPinching
+              isPinching || dwellProgress > 0.6
                 ? 'border-amber-300 bg-amber-400/30 scale-125'
                 : 'border-cyan-300 bg-cyan-400/10'
             }`}
           >
             <div
               className={`w-1.5 h-1.5 rounded-full ${
-                isPinching ? 'bg-amber-300 shadow-[0_0_10px_#F59E0B]' : 'bg-cyan-300 shadow-[0_0_8px_#06B6D4]'
+                isPinching || dwellProgress > 0.6
+                  ? 'bg-amber-300 shadow-[0_0_10px_#F59E0B]'
+                  : 'bg-cyan-300 shadow-[0_0_8px_#06B6D4]'
               }`}
             />
           </div>
@@ -499,7 +552,12 @@ const JarvisHoloHUDInner: React.FC = () => {
           <div className="absolute top-8 left-8 whitespace-nowrap px-2 py-0.5 rounded bg-black/85 border border-cyan-500/40 text-[9px] font-mono font-bold text-cyan-300 backdrop-blur-sm shadow-md flex items-center gap-1.5">
             <span>JARVIS [X:{cursorPos.x} Y:{cursorPos.y}]</span>
             {isPinching ? (
-              <span className="text-amber-300 font-extrabold uppercase animate-pulse">⚡ CLICK</span>
+              <span className="text-amber-300 font-extrabold uppercase animate-pulse">⚡ PINCH CLICK</span>
+            ) : dwellProgress > 0.1 ? (
+              <span className="text-amber-300 font-extrabold uppercase flex items-center gap-1">
+                <MousePointerClick size={10} className="animate-spin" />
+                HOLD ({Math.round(dwellProgress * 100)}%)
+              </span>
             ) : gesture !== 'none' ? (
               <span className="text-cyan-400 uppercase">· {gesture}</span>
             ) : null}
@@ -541,8 +599,9 @@ const JarvisHoloHUDInner: React.FC = () => {
               <span>JARVIS AI GESTURES</span>
             </div>
             <ul className="space-y-1 text-[11px] text-slate-300">
-              <li>🖐️ <b className="text-cyan-300">Move Hand</b>: Aim holographic laser</li>
-              <li>🤏 <b className="text-amber-300">Pinch Finger</b>: Click buttons & cards</li>
+              <li>🖐️ <b className="text-cyan-300">Move Hand</b>: Aim laser reticle</li>
+              <li>🤏 <b className="text-amber-300">Pinch Finger</b>: Instant click</li>
+              <li>🎯 <b className="text-amber-300">Hold 0.9s</b>: Auto dwell-click</li>
               <li>☝️ <b className="text-emerald-300">Hand Top/Bottom</b>: Auto-scroll</li>
               <li>✊ <b className="text-rose-300">Fist</b>: Toggle 3D Rover mode</li>
             </ul>
@@ -660,14 +719,14 @@ const JarvisHoloHUDInner: React.FC = () => {
   );
 };
 
-// --- Isolated Error Boundary so Jarvis crash never white-pages the portfolio ---
+// --- Isolated Error Boundary so Jarvis crash never affects the portfolio ---
 class JarvisErrorBoundary extends React.Component<
   { children: React.ReactNode },
   { crashed: boolean }
 > {
   state = { crashed: false };
   static getDerivedStateFromError() { return { crashed: true }; }
-  componentDidCatch(e: Error) { console.warn('JarvisHoloHUD caught error:', e.message); }
+  componentDidCatch(e: Error) { console.warn('JarvisHoloHUD error caught:', e.message); }
   render() {
     if (this.state.crashed) return null;
     return this.props.children;
@@ -679,4 +738,3 @@ export const JarvisHoloHUD: React.FC = () => (
     <JarvisHoloHUDInner />
   </JarvisErrorBoundary>
 );
-
