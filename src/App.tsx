@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { ScrollColorProvider } from './context/ScrollColorContext';
 import { Navbar } from './components/Navbar';
@@ -12,12 +12,14 @@ import { ExperienceSection } from './components/ExperienceSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { ScrollColorBackdrop } from './components/ScrollColorBackdrop';
-import { WorldCanvas } from './components/3d/WorldCanvas';
 import { TerminalModal } from './components/TerminalModal';
 import { MatrixRain } from './components/MatrixRain';
-import { JarvisHoloHUD } from './components/JarvisHoloHUD';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { worldStore, useWorldStore } from './context/World3DState';
+
+// Code-split heavy 3D engine and MediaPipe AI models for instantaneous 2D portfolio load
+const WorldCanvas = lazy(() => import('./components/3d/WorldCanvas').then(m => ({ default: m.WorldCanvas })));
+const JarvisHoloHUD = lazy(() => import('./components/JarvisHoloHUD').then(m => ({ default: m.JarvisHoloHUD })));
 
 export const AppContent: React.FC = () => {
   const is3DActive = useWorldStore(s => s.is3DActive);
@@ -77,7 +79,9 @@ export const AppContent: React.FC = () => {
   return (
     <>
       {is3DActive ? (
-        <WorldCanvas />
+        <Suspense fallback={<div className="w3d-root flex items-center justify-center bg-[#0A0A0F] text-cyan-400 font-mono text-xs">INITIALIZING 3D WORLD...</div>}>
+          <WorldCanvas />
+        </Suspense>
       ) : (
         <div className="min-h-screen flex flex-col transition-colors duration-300 relative overflow-x-hidden">
           <ScrollColorBackdrop />
@@ -106,7 +110,9 @@ export const AppContent: React.FC = () => {
       {matrixActive && <MatrixRain />}
 
       {/* Jarvis AI Holographic Vision Hand Tracking Engine */}
-      <JarvisHoloHUD />
+      <Suspense fallback={null}>
+        <JarvisHoloHUD />
+      </Suspense>
     </>
   );
 };
