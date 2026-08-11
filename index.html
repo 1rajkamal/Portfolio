@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark" style="background-color: #0A0A0F; color: #F8FAFC;">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/me.jpg" />
@@ -10,9 +10,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-      html, body {
-        background-color: #0A0A0F !important;
-        color: #F8FAFC !important;
+      html.dark, html.dark body {
+        background-color: #0A0A0F;
+        color: #F8FAFC;
+        margin: 0;
+        padding: 0;
+      }
+      html.light, html.light body {
+        background-color: #FAF9F6;
+        color: #0F172A;
         margin: 0;
         padding: 0;
       }
@@ -53,7 +59,7 @@
       } catch (e) {}
     </script>
   </head>
-  <body class="font-sans antialiased selection:bg-[var(--accent)] selection:text-white min-h-screen overflow-x-hidden" style="background-color: #0A0A0F; color: #F8FAFC;">
+  <body class="font-sans antialiased selection:bg-[var(--accent)] selection:text-white min-h-screen overflow-x-hidden">
     <div id="root">
       <div id="initial-loader">
         <div class="loader-spin"></div>
