@@ -201,17 +201,25 @@ const JarvisHoloHUDInner: React.FC = () => {
     };
   }, [isActive]);
 
-  // Robust Element Click Dispatcher
+  const lastClickTimeRef = useRef<number>(0);
+  const pinchLockPosRef = useRef<{ x: number; y: number } | null>(null);
+  const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);
+
+  // Clean Single-Action Holographic Click Executor with 600ms Cooldown
   const executeHolographicClick = (x: number, y: number) => {
+    const now = Date.now();
+    if (now - lastClickTimeRef.current < 600) return; // Strict 600ms debounce
+    lastClickTimeRef.current = now;
+
     try {
       const elements = document.elementsFromPoint(x, y);
       if (!elements || elements.length === 0) return;
 
-      // Filter out all HUD elements
+      // Filter out HUD elements
       const candidates = elements.filter(el => el && !el.closest('[data-jarvis-hud]'));
       if (candidates.length === 0) return;
 
-      // Priority 1: Direct interactive elements
+      // Find the best interactive target
       let clickTarget: HTMLElement | null = null;
       for (const el of candidates) {
         const direct = (el as Element).closest(
@@ -224,7 +232,6 @@ const JarvisHoloHUDInner: React.FC = () => {
         }
       }
 
-      // Priority 2: Custom clickable wrappers
       if (!clickTarget) {
         for (const el of candidates) {
           const custom = (el as Element).closest('[tabindex], .cursor-pointer') as HTMLElement | null;
@@ -235,7 +242,6 @@ const JarvisHoloHUDInner: React.FC = () => {
         }
       }
 
-      // Priority 3: Topmost non-HUD element
       if (!clickTarget) {
         clickTarget = candidates[0] as HTMLElement;
       }
@@ -246,38 +252,26 @@ const JarvisHoloHUDInner: React.FC = () => {
       // Visual shockwave ripple
       setRipples(prev => [...prev.slice(-5), { id: Date.now(), x, y }]);
 
-      // Complete synthetic event sequence
-      const eventOptions: MouseEventInit = {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-        detail: 1,
-        clientX: x,
-        clientY: y,
-        screenX: x,
-        screenY: y,
-        button: 0,
-        buttons: 1
-      };
+      // Visual button press feedback
+      clickTarget.classList.add('brightness-125', 'scale-95');
+      setTimeout(() => clickTarget.classList.remove('brightness-125', 'scale-95'), 200);
 
-      // Pointer & Mouse down
-      clickTarget.dispatchEvent(new PointerEvent('pointerdown', { ...eventOptions, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
-      clickTarget.dispatchEvent(new MouseEvent('mousedown', eventOptions));
-
+      // Focus element
       if (typeof clickTarget.focus === 'function') {
         try { clickTarget.focus(); } catch {}
       }
 
-      // Pointer & Mouse up
-      clickTarget.dispatchEvent(new PointerEvent('pointerup', { ...eventOptions, pointerId: 1, pointerType: 'mouse', isPrimary: true }));
-      clickTarget.dispatchEvent(new MouseEvent('mouseup', eventOptions));
-
-      // Click event
-      clickTarget.dispatchEvent(new MouseEvent('click', eventOptions));
-
-      // Native .click() execution
+      // Execute exactly ONE click mechanism (prevents double-toggling state)
       if (typeof clickTarget.click === 'function') {
         clickTarget.click();
+      } else {
+        clickTarget.dispatchEvent(new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+          clientX: x,
+          clientY: y
+        }));
       }
 
       // Anchor smooth hash navigation
@@ -401,7 +395,28 @@ const JarvisHoloHUDInner: React.FC = () => {
       4;
     const isFist = avgTipDistToWrist < 0.24;
 
-    // 3. Dwell Hover Auto-Click Logic (Hold still on an element for 0.9s to auto-click)
+    // 3. Hover Target Lock Identification
+    const elementsUnder = document.elementsFromPoint(curX, curY);
+    const validCandidate = elementsUnder.find(el => el && !el.closest('[data-jarvis-hud]'));
+    const interactiveTarget = validCandidate
+      ? ((validCandidate as Element).closest(
+          'button, a, input, textarea, select, [role="button"], [role="link"], [role="tab"], label, summary, [onclick], .btn-luxury, .btn-primary, .cursor-pointer'
+        ) as HTMLElement | null)
+      : null;
+
+    let currentTargetLabel: string | null = null;
+    if (interactiveTarget) {
+      const rawText =
+        interactiveTarget.getAttribute('aria-label') ||
+        interactiveTarget.getAttribute('title') ||
+        interactiveTarget.innerText ||
+        interactiveTarget.tagName;
+      const cleanText = rawText.replace(/\s+/g, ' ').trim().slice(0, 14);
+      currentTargetLabel = cleanText || 'TARGET LOCKED';
+    }
+    setHoveredLabel(currentTargetLabel);
+
+    // 4. Dwell Hover Auto-Click Logic (Hold still on an element for 0.8s to auto-click)
     const dwell = dwellTimerRef.current;
     const moveDist = Math.hypot(curX - dwell.lastX, curY - dwell.lastY);
 
@@ -412,10 +427,10 @@ const JarvisHoloHUDInner: React.FC = () => {
       dwell.startTime = now;
       dwell.triggered = false;
       setDwellProgress(0);
-    } else if (!isPinchingNow && !isFist) {
-      // Cursor is steady -> charge dwell timer
+    } else if (interactiveTarget && !isPinchingNow && !isFist) {
+      // Cursor is steady on an interactive target -> charge dwell timer
       const elapsed = now - dwell.startTime;
-      const dwellDuration = 900; // 0.9 seconds
+      const dwellDuration = 800; // 0.8 seconds
       const charge = Math.min(1, elapsed / dwellDuration);
       setDwellProgress(charge);
 
@@ -558,6 +573,8 @@ const JarvisHoloHUDInner: React.FC = () => {
                 <MousePointerClick size={10} className="animate-spin" />
                 HOLD ({Math.round(dwellProgress * 100)}%)
               </span>
+            ) : hoveredLabel ? (
+              <span className="text-amber-300 font-extrabold uppercase">🎯 {hoveredLabel}</span>
             ) : gesture !== 'none' ? (
               <span className="text-cyan-400 uppercase">· {gesture}</span>
             ) : null}
