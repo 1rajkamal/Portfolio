@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { Float, Text } from '@react-three/drei';
+import { Billboard } from '@react-three/drei';
 import { worldStore, useWorldStore, PLAYER_TELEMETRY } from '../../context/World3DState';
 
 export interface CheckpointRingData {
@@ -20,6 +20,37 @@ export const CHECKPOINTS: CheckpointRingData[] = [
   { id: 5, position: [0, 2.4, 6], rotation: [0, 0, 0], color: '#10b981' }
 ];
 
+function createRingBadgeTexture(label: string, color: string): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    // Dark cyber capsule
+    ctx.fillStyle = 'rgba(3, 7, 18, 0.9)';
+    ctx.beginPath();
+    ctx.roundRect(10, 10, 236, 108, 24);
+    ctx.fill();
+
+    // Glowing border
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.roundRect(10, 10, 236, 108, 24);
+    ctx.stroke();
+
+    // Text Label
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 32px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, 128, 64);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
 const CheckpointRing: React.FC<{
   checkpoint: CheckpointRingData;
   isActiveTarget: boolean;
@@ -27,6 +58,12 @@ const CheckpointRing: React.FC<{
 }> = ({ checkpoint, isActiveTarget, isPassed }) => {
   const ringRef = useRef<THREE.Group>(null);
   const pulseRef = useRef<THREE.Mesh>(null);
+
+  const badgeLabel = checkpoint.id === 5 ? '🏁 FINISH' : `RING #${checkpoint.id + 1}`;
+  const badgeTexture = useMemo(
+    () => createRingBadgeTexture(badgeLabel, checkpoint.color),
+    [badgeLabel, checkpoint.color]
+  );
 
   useFrame((state, delta) => {
     if (ringRef.current && isActiveTarget) {
@@ -78,19 +115,19 @@ const CheckpointRing: React.FC<{
         </mesh>
       )}
 
-      {/* Checkpoint Number Label */}
-      <Float speed={2} rotationIntensity={0.1} floatIntensity={0.3}>
-        <Text
-          position={[0, 4.2, 0]}
-          fontSize={1.1}
-          color={isActiveTarget ? '#ffffff' : '#94a3b8'}
-          font="https://fonts.gstatic.com/s/outfit/v11/Q_ZUr0349p1a_X-A1fX.woff"
-          anchorX="center"
-          anchorY="middle"
-        >
-          {checkpoint.id === 5 ? '🏁 FINISH' : `RING #${checkpoint.id + 1}`}
-        </Text>
-      </Float>
+      {/* Floating Hologram Label Badge (Zero external network dependencies) */}
+      <Billboard position={[0, 4.2, 0]}>
+        <mesh>
+          <planeGeometry args={[3.6, 1.8]} />
+          <meshBasicMaterial
+            map={badgeTexture}
+            transparent
+            depthWrite={false}
+            opacity={isActiveTarget ? 1.0 : 0.6}
+            toneMapped={false}
+          />
+        </mesh>
+      </Billboard>
 
       {/* Ground Energy Projector */}
       <mesh position={[0, -2.3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
