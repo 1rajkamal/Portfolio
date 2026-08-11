@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default: Midnight Luxury */
+  --bg: #0A0A0F;
+  --surface: #14141C;
+  --surface-hover: #1C1C27;
+  --text-primary: #F5F5F0;
+  --text-muted: #9A9AA5;
+  --accent: #D4AF37;
+  --accent-2: #7C5CFF;
+  --glow: rgba(212, 175, 55, 0.22);
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-card-hover: rgba(212, 175, 55, 0.4);
+}
+
+.light {
+  /* Default Light: Cream & Terracotta */
+  --bg: #FAF6F0;
+  --surface: #FFFFFF;
+  --surface-hover: #FDFBF8;
+  --text-primary: #2B2620;
+  --text-muted: #7A736A;
+  --accent: #C1502E;
+  --accent-2: #4A6C6F;
+  --glow: rgba(193, 80, 46, 0.15);
+  --border-card: rgba(0, 0, 0, 0.08);
+  --border-card-hover: rgba(193, 80, 46, 0.4);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Dynamic Scroll-Reactive Luxury Button */
+.btn-luxury {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.6rem;
+  font-weight: 800;
+  font-size: 0.875rem;
+  color: #0A0A0F;
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: 0 10px 25px -5px var(--glow);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.light .btn-luxury {
+  color: #ffffff;
+}
+
+.btn-luxury:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 15px 35px -5px var(--glow);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #ffffff;
+}
+
+/* Frosted Luxury Glass Card */
+.glass-card {
+  background-color: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-card);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  background-color: var(--surface-hover);
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 45px -10px var(--glow);
+}
+
+/* Glass Panel for Navbar & Modals */
+.glass-panel {
+  background-color: var(--surface);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-card);
+  box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.4);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Headings with Dynamic Accent Color Shift */
+.text-accent-gradient {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 3D Root Container */
+.w3d-root {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  overflow: hidden;
+  background: #0A0A0F;
+  user-select: none;
+}
+
+.w3d-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(10, 10, 15, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--mk, #D4AF37);
+  border-radius: 12px;
+  padding: 6px 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 15px var(--mk, #D4AF37);
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.w3d-marker-label {
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--mk, #D4AF37);
+}
+
+.w3d-marker-hint {
+  font-size: 0.68rem;
+  color: #cbd5e1;
+}
+
+/* Touch Virtual Joystick */
+.w3d-touch {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 40;
+}
+
+.w3d-joy {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(10, 10, 15, 0.8);
+  border: 2px solid rgba(212, 175, 55, 0.4);
+  backdrop-filter: blur(12px);
+  touch-action: none;
+}
+
+.w3d-joy-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  margin-left: -22px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #D4AF37, #7C5CFF);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.7);
+  pointer-events: none;
+}
+
+/* Noise overlay for subtle atmospheric depth */
+.noise-overlay {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(154, 154, 165, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(154, 154, 165, 0.6);
+}

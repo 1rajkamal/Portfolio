@@ -1,0 +1,79 @@
+import React, { useEffect } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
+import { ScrollColorProvider } from './context/ScrollColorContext';
+import { Navbar } from './components/Navbar';
+import { HeroSection } from './components/HeroSection';
+import { AboutSection } from './components/AboutSection';
+import { SkillsSection } from './components/SkillsSection';
+import { ProjectsSection } from './components/ProjectsSection';
+import { CertificationsSection } from './components/CertificationsSection';
+import { HackathonsSection } from './components/HackathonsSection';
+import { ExperienceSection } from './components/ExperienceSection';
+import { ContactSection } from './components/ContactSection';
+import { Footer } from './components/Footer';
+import { ScrollColorBackdrop } from './components/ScrollColorBackdrop';
+import { WorldCanvas } from './components/3d/WorldCanvas';
+import { worldStore, useWorldStore } from './context/World3DState';
+
+export const AppContent: React.FC = () => {
+  const is3DActive = useWorldStore(s => s.is3DActive);
+
+  useEffect(() => {
+    // Hash router check for #3d on page load
+    if (window.location.hash === '#3d' || window.location.pathname.includes('3d')) {
+      worldStore.setIs3DActive(true);
+    }
+  }, []);
+
+  // When switching from 3D back to 2D portfolio, auto-scroll to the requested hash target
+  useEffect(() => {
+    if (!is3DActive && window.location.hash && window.location.hash !== '#3d') {
+      const targetId = window.location.hash.replace('#', '');
+      const scrollAttempt = (count = 0) => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (count < 20) {
+          setTimeout(() => scrollAttempt(count + 1), 40);
+        }
+      };
+      setTimeout(() => scrollAttempt(), 60);
+    }
+  }, [is3DActive]);
+
+  return (
+    <>
+      {is3DActive ? (
+        <WorldCanvas />
+      ) : (
+        <div className="min-h-screen flex flex-col transition-colors duration-300 relative overflow-x-hidden">
+          <ScrollColorBackdrop />
+          <Navbar />
+          <main className="flex-1">
+            <HeroSection />
+            <AboutSection />
+            <SkillsSection />
+            <ProjectsSection />
+            <CertificationsSection />
+            <HackathonsSection />
+            <ExperienceSection />
+            <ContactSection />
+          </main>
+          <Footer />
+        </div>
+      )}
+    </>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <ThemeProvider>
+      <ScrollColorProvider>
+        <AppContent />
+      </ScrollColorProvider>
+    </ThemeProvider>
+  );
+};
+
+export default App;

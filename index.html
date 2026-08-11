@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/me.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Raj Kamal — Data Analyst & Developer | 3D Interactive Portfolio</title>
+    <meta name="description" content="Portfolio of Raj Kamal — Data Analyst, Python, Machine Learning & AI Developer. Explore interactive 3D world, projects, skills and experience." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script>
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light') {
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body class="bg-[#0b0f19] text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white min-h-screen overflow-x-hidden">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
