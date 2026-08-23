@@ -29,7 +29,7 @@ export const ProjectsSection: React.FC = () => {
             Featured <span className="text-accent-gradient">Projects & Live Apps</span>
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)]">
-            Chatbots, predictive machine learning models, mood detection tools, finance trackers, and responsive web platforms built from scratch.
+            Real-time multiplayer games, chatbots, predictive machine learning models, mood detection tools, finance trackers, and responsive web platforms.
           </p>
 
           {/* Filter Tabs */}

@@ -61,7 +61,7 @@ export const PORTFOLIO_DATA = {
     profileImage: "/me.jpg",
     resumePdf: "/Raj_kamal.pdf",
     stats: [
-      { value: "6+", label: "Real-World Projects" },
+      { value: "7+", label: "Real-World Projects" },
       { value: "8+", label: "Industry Certifications" },
       { value: "3", label: "Innovation Hackathons" },
       { value: "100%", label: "Problem-Solving Passion" }
@@ -128,6 +128,24 @@ export const PORTFOLIO_DATA = {
   ] as SkillCategory[],
 
   projects: [
+    {
+      id: "drawing-duel",
+      title: "Drawing Duel — Real-Time 2-Player Cartoon Drawing Showdown",
+      subtitle: "Multiplayer WebRTC & Canvas Battle with AI Scoring",
+      category: "web-dev",
+      description: "A real-time 2-player cartoon drawing showdown where players join via room code/QR, choose from 30 cartoon artworks across difficulty tiers, race against the clock, and get scored by an automated computer vision accuracy engine.",
+      points: [
+        "Architected sub-10ms real-time multiplayer synchronization via WebRTC P2P DataChannels & Socket.IO.",
+        "Built responsive HTML5 Canvas drawing suite with Bézier smoothing, pressure sensitivity, undo/redo, and color palettes.",
+        "Engineered automated multi-factor accuracy scoring engine with Sobel edge detection, SSIM, and HSV color histogram matching.",
+        "Designed instant mobile pairing with dynamic QR codes and 1-tap room invite links."
+      ],
+      tags: ["React", "TypeScript", "WebRTC", "Socket.IO", "HTML5 Canvas", "Computer Vision", "TailwindCSS"],
+      image: "/draw.png",
+      githubUrl: "https://github.com/1rajkamal/Draw",
+      liveUrl: "https://draw-sigma-virid.vercel.app/",
+      featured: true
+    },
     {
       id: "alpha-talk",
       title: "Alpha Talk — Custom Reply Chatbot",
@@ -382,11 +400,11 @@ export const PORTFOLIO_DATA = {
         color: "#ec4899",
         panel: {
           eyebrow: "Featured Projects",
-          title: "Chatbots, Web Apps & ML Models",
+          title: "Multiplayer Games, Chatbots & ML",
           body: [
-            "From Alpha Talk AI Chatbot to LoanPredict Ai, MoodSense, Expense-Tracker, How Fast You Are, and M.K Bright Path Coaching Platform. Explore each screen!"
+            "From Drawing Duel real-time cartoon drawing showdown to Alpha Talk AI Chatbot, LoanPredict Ai, MoodSense, Expense-Tracker, How Fast You Are, and M.K Bright Path Coaching Platform. Explore each kiosk!"
           ],
-          chips: ["Alpha Talk", "LoanPredict Ai", "MoodSense", "Expense-Tracker", "How Fast You Are", "M.K Bright Path"],
+          chips: ["Drawing Duel", "Alpha Talk", "LoanPredict Ai", "MoodSense", "Expense-Tracker", "How Fast You Are", "M.K Bright Path"],
           cta: { label: "Open Projects Showcase", href: "#projects" }
         }
       },
