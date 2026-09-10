@@ -143,7 +143,7 @@ export const PORTFOLIO_DATA = {
       tags: ["Python", "Telegram Bot API", "FastAPI", "NLP", "PyMuPDF", "ReportLab", "AI / ATS Matching"],
       image: "/hasira.png",
       githubUrl: "https://github.com/1rajkamal/ai-resume-chatbot",
-      liveUrl: "https://t.me/HARISA_Resume_Bot",
+      liveUrl: "https://ai-resume-chatbot-rho.vercel.app",
       featured: true
     },
     {
