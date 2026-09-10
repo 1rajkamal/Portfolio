@@ -61,7 +61,7 @@ export const PORTFOLIO_DATA = {
     profileImage: "/me.jpg",
     resumePdf: "/Raj_kamal.pdf",
     stats: [
-      { value: "7+", label: "Real-World Projects" },
+      { value: "8+", label: "Real-World Projects" },
       { value: "8+", label: "Industry Certifications" },
       { value: "3", label: "Innovation Hackathons" },
       { value: "100%", label: "Problem-Solving Passion" }
@@ -128,6 +128,24 @@ export const PORTFOLIO_DATA = {
   ] as SkillCategory[],
 
   projects: [
+    {
+      id: "ai-resume-chatbot",
+      title: "HARISA AI — Smart Resume & ATS Job Matcher",
+      subtitle: "Dual-Track ATS & Multi-Resume Ranking Telegram Bot",
+      category: "ai-ml",
+      description: "A production-ready AI-powered Resume Intelligence Telegram Chatbot. Evaluates candidate resumes against real job descriptions using 100-point dual-track scoring (ATS formatting + JD semantic alignment), multi-candidate leaderboards, grounded bullet improvements, and exportable PDF/DOCX reports.",
+      points: [
+        "Engineered dual-track evaluation: 100-point ATS structure analysis plus semantic JD matching with TF-IDF cosine similarity.",
+        "Implemented multi-candidate leaderboard with best resume selection and explainable selection rationale.",
+        "Enforced strict anti-hallucination policies for factual experience improvements and resume tailoring.",
+        "Built interactive Telegram UX with persistent menu keyboards, inline callback buttons, and full GDPR data purge."
+      ],
+      tags: ["Python", "Telegram Bot API", "FastAPI", "NLP", "PyMuPDF", "ReportLab", "AI / ATS Matching"],
+      image: "/hasira.png",
+      githubUrl: "https://github.com/1rajkamal/ai-resume-chatbot",
+      liveUrl: "https://t.me/HARISA_Resume_Bot",
+      featured: true
+    },
     {
       id: "drawing-duel",
       title: "Drawing Duel — Real-Time 2-Player Cartoon Drawing Showdown",
@@ -402,9 +420,9 @@ export const PORTFOLIO_DATA = {
           eyebrow: "Featured Projects",
           title: "Multiplayer Games, Chatbots & ML",
           body: [
-            "From Drawing Duel real-time cartoon drawing showdown to Alpha Talk AI Chatbot, LoanPredict Ai, MoodSense, Expense-Tracker, How Fast You Are, and M.K Bright Path Coaching Platform. Explore each kiosk!"
+            "From HARISA AI Resume Chatbot and Drawing Duel real-time showdown to Alpha Talk AI Chatbot, LoanPredict Ai, MoodSense, Expense-Tracker, How Fast You Are, and M.K Bright Path Coaching Platform. Explore each kiosk!"
           ],
-          chips: ["Drawing Duel", "Alpha Talk", "LoanPredict Ai", "MoodSense", "Expense-Tracker", "How Fast You Are", "M.K Bright Path"],
+          chips: ["HARISA AI", "Drawing Duel", "Alpha Talk", "LoanPredict Ai", "MoodSense", "Expense-Tracker", "How Fast You Are", "M.K Bright Path"],
           cta: { label: "Open Projects Showcase", href: "#projects" }
         }
       },
