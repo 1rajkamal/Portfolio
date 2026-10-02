@@ -47,12 +47,24 @@ export interface ExperienceItem {
   technologies: string[];
 }
 
+export const HERO_ROLES = [
+  'Full Stack Developer',
+  'Data Scientist',
+  'Machine Learning Engineer',
+  'Artificial Intelligence Engineer',
+  'Generative AI Developer',
+  'Python Developer',
+  'Data Analyst',
+  'UI/UX Developer',
+];
+
 export const PORTFOLIO_DATA = {
   personal: {
     name: "Raj Kamal",
     shortName: "Raj Kamal",
     title: "Full Stack Developer & Data Scientist",
     headline: "Focused on Solving Real-World Problems · From Curiosity to Creation",
+    heroRoles: HERO_ROLES,
     tagline: "No roadmap. No guidance. Just curiosity.",
     bio: "Computer Science undergraduate with hands-on experience building full-stack web applications, RESTful APIs, and integrating machine learning models & Generative AI into practical, high-impact products.",
     location: "Kakinada, Andhra Pradesh, India",

@@ -9,10 +9,11 @@ import {
   Sparkles,
   Terminal
 } from 'lucide-react';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { PORTFOLIO_DATA, HERO_ROLES } from '../data/portfolioData';
 import { worldStore } from '../context/World3DState';
 import { ScrollReveal } from './ScrollReveal';
 import { CountUp } from './CountUp';
+import { TypewriterText } from './TypewriterText';
 
 export const HeroSection: React.FC = () => {
   const { personal } = PORTFOLIO_DATA;
@@ -44,9 +45,12 @@ export const HeroSection: React.FC = () => {
               <span className="inline-block origin-[70%_70%] animate-wave">👋</span>
             </h1>
 
-            <p className="mt-3.5 font-display font-bold text-lg sm:text-2xl text-[var(--text-primary)] tracking-tight">
-              {personal.headline}
-            </p>
+            <div className="mt-3.5">
+              <TypewriterText
+                roles={HERO_ROLES}
+                textClassName="text-xl sm:text-2xl lg:text-3xl font-extrabold"
+              />
+            </div>
 
             <p className="mt-3.5 text-sm sm:text-base text-[var(--text-muted)] max-w-xl leading-relaxed">
               {personal.bio}
