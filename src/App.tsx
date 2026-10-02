@@ -15,6 +15,8 @@ import { ScrollColorBackdrop } from './components/ScrollColorBackdrop';
 import { TerminalModal } from './components/TerminalModal';
 import { MatrixRain } from './components/MatrixRain';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { ScrollProgressBar } from './components/ScrollProgressBar';
+import { AmbientSpotlight } from './components/AmbientSpotlight';
 import { worldStore, useWorldStore } from './context/World3DState';
 
 // Code-split heavy 3D engine and MediaPipe AI models for instantaneous 2D portfolio load
@@ -84,6 +86,8 @@ export const AppContent: React.FC = () => {
         </Suspense>
       ) : (
         <div className="min-h-screen flex flex-col transition-colors duration-300 relative overflow-x-hidden">
+          <ScrollProgressBar />
+          <AmbientSpotlight />
           <ScrollColorBackdrop />
           <Navbar />
           <main className="flex-1">

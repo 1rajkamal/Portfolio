@@ -39,7 +39,7 @@ const WELCOME_BANNER = `
   ╚═╝  ╚═╝╚═╝  ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝
 ========================================================================
   🚀 Raj Kamal OS [Version 3.4.0-Cyberpunk]
-  💻 Full Stack Developer & Data Analyst
+  💻 Full Stack Developer & Data Scientist
   Type "help" to see available commands or click quick action buttons.
 ========================================================================
 `;

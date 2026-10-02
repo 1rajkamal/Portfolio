@@ -7,6 +7,7 @@ import {
   X
 } from 'lucide-react';
 import { PORTFOLIO_DATA, Project } from '../data/portfolioData';
+import { ScrollReveal } from './ScrollReveal';
 
 export const ProjectsSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'ai-ml' | 'data-science' | 'web-dev'>('all');
@@ -20,49 +21,55 @@ export const ProjectsSection: React.FC = () => {
   return (
     <section id="projects" className="py-16 sm:py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] text-xs font-extrabold uppercase tracking-wider">
-            <Sparkles size={13} />
-            Real-World Products
-          </div>
-          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black font-display text-[var(--text-primary)]">
-            Featured <span className="text-accent-gradient">Projects & Live Apps</span>
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)]">
-            Real-time multiplayer games, chatbots, predictive machine learning models, mood detection tools, finance trackers, and responsive web platforms.
-          </p>
+        <ScrollReveal direction="left" distance={30}>
+          <div className="text-center max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] text-xs font-extrabold uppercase tracking-wider">
+              <Sparkles size={13} />
+              Real-World Products
+            </div>
+            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black font-display text-[var(--text-primary)]">
+              Featured <span className="text-accent-gradient">Projects & Live Apps</span>
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)]">
+              Real-time multiplayer games, chatbots, predictive machine learning models, mood detection tools, finance trackers, and responsive web platforms.
+            </p>
 
-          {/* Filter Tabs */}
-          <div className="mt-8 inline-flex p-1.5 rounded-2xl glass-panel border border-[var(--border-card)] shadow-sm">
-            {[
-              { id: 'all', label: 'All Projects' },
-              { id: 'ai-ml', label: 'AI & ML' },
-              { id: 'data-science', label: 'Data Science' },
-              { id: 'web-dev', label: 'Web & Games' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all ${
-                  activeTab === tab.id
-                    ? 'btn-luxury shadow-md scale-105'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+            {/* Filter Tabs */}
+            <div className="mt-8 inline-flex p-1.5 rounded-2xl glass-panel border border-[var(--border-card)] shadow-sm">
+              {[
+                { id: 'all', label: 'All Projects' },
+                { id: 'ai-ml', label: 'AI & ML' },
+                { id: 'data-science', label: 'Data Science' },
+                { id: 'web-dev', label: 'Web & Games' }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all ${
+                    activeTab === tab.id
+                      ? 'btn-luxury shadow-md scale-105'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
 
-        {/* Projects Grid */}
+        {/* Projects Grid with Alternating Left/Right Smooth Reveal */}
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {filteredProjects.map((project: Project) => (
-            <div
+          {filteredProjects.map((project: Project, idx: number) => (
+            <ScrollReveal
               key={project.id}
-              className="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group border border-[var(--border-card)]"
+              direction={idx % 2 === 0 ? 'left' : 'right'}
+              distance={35}
+              duration={850}
+              delay={(idx % 3) * 100}
             >
+              <div className="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group border border-[var(--border-card)] h-full">
               {/* Image Preview */}
               <div>
                 <div className="relative h-52 sm:h-56 bg-slate-950 overflow-hidden">
@@ -76,8 +83,8 @@ export const ProjectsSection: React.FC = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
 
-                  {/* Category Pill */}
-                  <div className="absolute top-3.5 left-3.5">
+                  {/* Category & Status Pills */}
+                  <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
                     <span className="px-3 py-1 rounded-full text-[11px] font-black bg-slate-900/90 backdrop-blur-md border border-white/20 text-white shadow-md">
                       {project.category === 'ai-ml'
                         ? 'AI & ML'
@@ -85,6 +92,12 @@ export const ProjectsSection: React.FC = () => {
                         ? 'Data Science'
                         : 'Web & Games'}
                     </span>
+                    {project.statusBadge && (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-500/90 text-white backdrop-blur-md shadow-md">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                        {project.statusBadge}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -96,6 +109,15 @@ export const ProjectsSection: React.FC = () => {
                   <p className="text-xs font-bold text-[var(--accent)] mt-1">
                     {project.subtitle}
                   </p>
+
+                  {/* Key Metric Highlight */}
+                  {project.metric && (
+                    <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--surface)] border border-[var(--border-card)] text-[11px] font-mono font-bold text-[var(--accent)]">
+                      <Sparkles size={11} className="text-[var(--accent)] shrink-0" />
+                      <span>{project.metric}</span>
+                    </div>
+                  )}
+
                   <p className="mt-3 text-xs sm:text-sm text-[var(--text-muted)] line-clamp-3 leading-relaxed">
                     {project.description}
                   </p>
@@ -149,8 +171,9 @@ export const ProjectsSection: React.FC = () => {
                 </button>
               </div>
             </div>
-          ))}
-        </div>
+          </ScrollReveal>
+        ))}
+      </div>
       </div>
 
       {/* Details Modal */}

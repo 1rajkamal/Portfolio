@@ -10,6 +10,8 @@ export interface Project {
   liveUrl?: string;
   githubUrl?: string;
   featured?: boolean;
+  metric?: string;
+  statusBadge?: string;
 }
 
 export interface SkillCategory {
@@ -49,16 +51,16 @@ export const PORTFOLIO_DATA = {
   personal: {
     name: "Raj Kamal",
     shortName: "Raj Kamal",
-    title: "Full Stack Developer & Data Analyst",
+    title: "Full Stack Developer & Data Scientist",
     headline: "Focused on Solving Real-World Problems · From Curiosity to Creation",
     tagline: "No roadmap. No guidance. Just curiosity.",
-    bio: "Passionate developer and data analyst focused on building real-world digital products. I work across full stack development, problem solving, generative AI, and data analytics to create meaningful, high-impact experiences.",
-    location: "India",
+    bio: "Computer Science undergraduate with hands-on experience building full-stack web applications, RESTful APIs, and integrating machine learning models & Generative AI into practical, high-impact products.",
+    location: "Kakinada, Andhra Pradesh, India",
     email: "rajkamal9741@gmail.com",
     portfolioUrl: "https://rajkamall.me",
     githubUrl: "https://github.com/1rajkamal",
     linkedinUrl: "https://www.linkedin.com/in/raj-kamal-490176291",
-    profileImage: "/me.jpg",
+    profileImage: "/rajkamal_hero.png",
     resumePdf: "/Raj_kamal.pdf",
     stats: [
       { value: "8+", label: "Real-World Projects" },
@@ -144,7 +146,9 @@ export const PORTFOLIO_DATA = {
       image: "/hasira.png",
       githubUrl: "https://github.com/1rajkamal/ai-resume-chatbot",
       liveUrl: "https://ai-resume-chatbot-rho.vercel.app",
-      featured: true
+      featured: true,
+      statusBadge: "Live Production",
+      metric: "100-Pt Dual-Track ATS"
     },
     {
       id: "drawing-duel",
@@ -162,7 +166,9 @@ export const PORTFOLIO_DATA = {
       image: "/draw.png",
       githubUrl: "https://github.com/1rajkamal/Draw",
       liveUrl: "https://draw-sigma-virid.vercel.app/",
-      featured: true
+      featured: true,
+      statusBadge: "Real-Time App",
+      metric: "<10ms WebRTC Sync"
     },
     {
       id: "alpha-talk",
@@ -179,7 +185,9 @@ export const PORTFOLIO_DATA = {
       image: "/alpha.png",
       githubUrl: "https://github.com/1rajkamal/Alpha_Talk",
       liveUrl: "https://alpha-kamal.onrender.com/login",
-      featured: true
+      featured: true,
+      statusBadge: "Live AI Agent",
+      metric: "Real-Time NLP Pipeline"
     },
     {
       id: "loan-predict",
@@ -196,7 +204,9 @@ export const PORTFOLIO_DATA = {
       image: "/loan.png",
       githubUrl: "https://github.com/1rajkamal/loan-predictor",
       liveUrl: "https://loan-predictor-ns16.onrender.com/",
-      featured: true
+      featured: true,
+      statusBadge: "Live ML Model",
+      metric: "Scikit-Learn Classifier"
     },
     {
       id: "moodsense",
@@ -213,7 +223,9 @@ export const PORTFOLIO_DATA = {
       image: "/mood.png",
       githubUrl: "https://github.com/1rajkamal/MoodSense",
       liveUrl: "https://moodsense-1.onrender.com",
-      featured: true
+      featured: true,
+      statusBadge: "Sentiment Engine",
+      metric: "TF-IDF & NLP Analysis"
     },
     {
       id: "expense-tracker",
@@ -230,7 +242,9 @@ export const PORTFOLIO_DATA = {
       image: "/expense-tracker.png",
       githubUrl: "https://github.com/1rajkamal/Expense-Tracker",
       liveUrl: "https://1rajkamal.github.io/Expense-Tracker/",
-      featured: true
+      featured: true,
+      statusBadge: "Personal Finance",
+      metric: "Normalized Relational CRUD"
     },
     {
       id: "how-fast-you-are",
@@ -247,7 +261,9 @@ export const PORTFOLIO_DATA = {
       image: "/fast.png",
       githubUrl: "https://github.com/1rajkamal/how-fast-you-are",
       liveUrl: "https://1rajkamal.github.io/how-fast-you-are/",
-      featured: true
+      featured: true,
+      statusBadge: "Interactive Game",
+      metric: "Kinetic WPM & Accuracy"
     },
     {
       id: "responsive-coaching",
@@ -264,7 +280,9 @@ export const PORTFOLIO_DATA = {
       image: "/brightpath.png",
       githubUrl: "https://github.com/1rajkamal/brightpath",
       liveUrl: "https://1rajkamal.github.io/brightpath/",
-      featured: true
+      featured: true,
+      statusBadge: "Live Web Platform",
+      metric: "100% Mobile Responsive"
     }
   ] as Project[],
 
@@ -348,24 +366,24 @@ export const PORTFOLIO_DATA = {
   education: [
     {
       degree: "B.Tech in Computer Science and Engineering (Data Science)",
-      institution: "Bachelor of Technology",
-      details: "Specializing in Data Science, Machine Learning algorithms, Data Structures, Exploratory Data Analysis, Database Management, and Full Stack Development."
+      institution: "Aditya University, Andhra Pradesh, India",
+      details: "Specializing in Data Science, Machine Learning algorithms, Data Structures, Exploratory Data Analysis, Database Management, and Full Stack Development. Expected Graduation: 2027."
     }
   ],
 
   experience: [
     {
-      role: "Full Stack Developer & Data Analyst",
-      company: "Independent Software & Open Source Projects",
+      role: "Full Stack Developer & Data Scientist",
+      company: "Full-Stack Web & Applied AI Projects",
       period: "2023 – Present",
-      type: "Software Development & Analytics",
+      type: "Software Development & Applied ML",
       points: [
-        "Developed custom conversational chatbots and NLP sentiment classification engines.",
-        "Built responsive web applications including tuition enquiry platforms and personal finance managers.",
-        "Conducted extensive Exploratory Data Analysis (EDA) and data wrangling with Pandas and NumPy.",
-        "Earned 8+ industry certifications from Cisco, Oracle, Red Hat, Certiport, and Infosys."
+        "Architected full-stack web applications with Python, Flask, and JavaScript integrating ML classifiers and Generative AI.",
+        "Built responsive interfaces and structured RESTful APIs with MVC patterns, CRUD operations, and normalized MySQL schemas.",
+        "Developed custom conversational chatbots, real-time multiplayer applications, and sentiment analysis NLP pipelines.",
+        "Earned 8+ industry certifications from Oracle (Java), Cisco (Python/C), Red Hat, Certiport, and Infosys."
       ],
-      technologies: ["Python", "Pandas", "Scikit-Learn", "NLP", "JavaScript", "HTML/CSS", "SQL", "Git"]
+      technologies: ["Python", "Flask", "JavaScript", "MySQL", "Scikit-Learn", "REST APIs", "NLP", "Git"]
     }
   ] as ExperienceItem[],
 
@@ -382,13 +400,13 @@ export const PORTFOLIO_DATA = {
         color: "#818cf8",
         panel: {
           eyebrow: "About Raj Kamal",
-          title: "Full Stack Developer & Data Analyst",
+          title: "Full Stack Developer & Data Scientist",
           body: [
-            "Focused on solving real-world problems through clean code, data analysis, and intelligent software.",
-            "Specializing in Computer Science & Data Science with hands-on skills in Python, Java, C++, and Web Development.",
+            "Focused on solving real-world problems through clean code, applied data science, and intelligent software.",
+            "Specializing in Computer Science & Data Science with hands-on skills in Python, Flask, JavaScript, MySQL, and ML.",
             "From curiosity to creation: building tools that simplify complexity and create real value."
           ],
-          chips: ["Full Stack Developer", "Data Analyst", "Python & AI Enthusiast"],
+          chips: ["Full Stack Developer", "Data Scientist", "Python & AI Enthusiast"],
           cta: { label: "View Full Profile", href: "#about" }
         }
       },

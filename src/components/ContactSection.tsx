@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { ScrollReveal } from './ScrollReveal';
 
 export const ContactSection: React.FC = () => {
   const { personal } = PORTFOLIO_DATA;
@@ -36,29 +37,32 @@ export const ContactSection: React.FC = () => {
   return (
     <section id="contact" className="py-16 sm:py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] text-xs font-extrabold uppercase tracking-wider">
-            <Sparkles size={13} />
-            Transmission Hub
+        <ScrollReveal direction="left" distance={30}>
+          <div className="text-center max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] text-xs font-extrabold uppercase tracking-wider">
+              <Sparkles size={13} />
+              Transmission Hub
+            </div>
+            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black font-display text-[var(--text-primary)]">
+              Get in <span className="text-accent-gradient">Touch</span>
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)]">
+              Have an exciting software project, role, or opportunity? My inbox is always open!
+            </p>
           </div>
-          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black font-display text-[var(--text-primary)]">
-            Get in <span className="text-accent-gradient">Touch</span>
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)]">
-            Have an exciting software project, role, or opportunity? My inbox is always open!
-          </p>
-        </div>
+        </ScrollReveal>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-2">
-          {/* Direct Channels */}
-          <div className="glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-[var(--border-card)] shadow-sm">
-            <div>
-              <h3 className="font-display font-extrabold text-xl text-[var(--text-primary)]">
-                Contact & Profiles
-              </h3>
-              <p className="mt-2 text-sm text-[var(--text-muted)]">
-                Reach out directly via email or connect with me on professional platforms.
-              </p>
+          {/* Direct Channels — Glides from Left */}
+          <ScrollReveal direction="left" distance={35} delay={100}>
+            <div className="glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-[var(--border-card)] shadow-sm h-full">
+              <div>
+                <h3 className="font-display font-extrabold text-xl text-[var(--text-primary)]">
+                  Contact & Profiles
+                </h3>
+                <p className="mt-2 text-sm text-[var(--text-muted)]">
+                  Reach out directly via email or connect with me on professional platforms.
+                </p>
 
               <div className="mt-8 space-y-4">
                 <a
@@ -135,9 +139,11 @@ export const ContactSection: React.FC = () => {
               </a>
             </div>
           </div>
+        </ScrollReveal>
 
-          {/* Direct Message Form */}
-          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-[var(--border-card)] shadow-sm">
+        {/* Direct Message Form — Glides from Right */}
+        <ScrollReveal direction="right" distance={35} delay={100}>
+          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-[var(--border-card)] shadow-sm h-full">
             <h3 className="font-display font-extrabold text-xl text-[var(--text-primary)]">
               Send a Direct Message
             </h3>
@@ -233,7 +239,8 @@ export const ContactSection: React.FC = () => {
               </form>
             )}
           </div>
-        </div>
+        </ScrollReveal>
+      </div>
       </div>
     </section>
   );

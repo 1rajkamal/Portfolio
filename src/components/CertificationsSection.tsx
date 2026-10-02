@@ -1,6 +1,7 @@
 import React from 'react';
 import { Award, FileText, CheckCircle } from 'lucide-react';
 import { PORTFOLIO_DATA, Certification } from '../data/portfolioData';
+import { ScrollReveal } from './ScrollReveal';
 
 export const CertificationsSection: React.FC = () => {
   const { certifications } = PORTFOLIO_DATA;
@@ -9,26 +10,34 @@ export const CertificationsSection: React.FC = () => {
     <section id="certifications" className="py-16 sm:py-24 relative scroll-mt-10">
       <span id="certificates" className="sr-only" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] text-xs font-extrabold uppercase tracking-wider">
-            <Award size={13} />
-            Verified Accreditations
+        <ScrollReveal direction="left" distance={30}>
+          <div className="text-center max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] text-xs font-extrabold uppercase tracking-wider">
+              <Award size={13} />
+              Verified Accreditations
+            </div>
+            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black font-display text-[var(--text-primary)]">
+              Industry <span className="text-accent-gradient">Certifications & Honors</span>
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)]">
+              Globally recognized accreditations in Python, Java, Database Management, and Data Analytics from Cisco, Oracle, Red Hat, Certiport, Infosys, and Udemy.
+            </p>
           </div>
-          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black font-display text-[var(--text-primary)]">
-            Industry <span className="text-accent-gradient">Certifications & Honors</span>
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)]">
-            Globally recognized accreditations in Python, Java, Database Management, and Data Analytics from Cisco, Oracle, Red Hat, Certiport, Infosys, and Udemy.
-          </p>
-        </div>
+        </ScrollReveal>
 
-        {/* Certifications Grid */}
+        {/* Certifications Grid with Alternating Reveal */}
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {certifications.map((cert: Certification, idx: number) => (
-            <div
+            <ScrollReveal
               key={idx}
-              className="glass-card rounded-3xl p-6 border border-[var(--border-card)] flex flex-col justify-between group shadow-sm"
+              direction={idx % 2 === 0 ? 'left' : 'right'}
+              distance={28}
+              duration={850}
+              delay={(idx % 4) * 80}
             >
+              <div
+                className="glass-card rounded-3xl p-6 border border-[var(--border-card)] flex flex-col justify-between group shadow-sm h-full"
+              >
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div
@@ -70,6 +79,7 @@ export const CertificationsSection: React.FC = () => {
                 )}
               </div>
             </div>
+          </ScrollReveal>
           ))}
         </div>
       </div>

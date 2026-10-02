@@ -5,15 +5,14 @@ import {
   Mail,
   Gamepad2,
   ArrowRight,
+  Download,
   Sparkles,
-  Database,
-  BrainCircuit,
-  FileCode2,
-  Code2,
   Terminal
 } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { worldStore } from '../context/World3DState';
+import { ScrollReveal } from './ScrollReveal';
+import { CountUp } from './CountUp';
 
 export const HeroSection: React.FC = () => {
   const { personal } = PORTFOLIO_DATA;
@@ -21,20 +20,31 @@ export const HeroSection: React.FC = () => {
   return (
     <section id="home" className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-          {/* Left Hero Content */}
-          <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] text-xs font-extrabold uppercase tracking-wider shadow-sm">
-              <Sparkles size={13} className="text-[var(--accent)]" />
-              <span>Full Stack Developer & Data Analyst</span>
+        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+          {/* Left Hero Content — Glides from Left */}
+          <ScrollReveal direction="left" distance={45} duration={950}>
+            {/* Status Pulse Pill */}
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-bold tracking-wide shadow-sm backdrop-blur-md mb-3.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>Available for Full-Time Roles & High-Impact Projects</span>
             </div>
 
-            <h1 className="mt-4 font-display text-4xl sm:text-6xl lg:text-6xl font-black tracking-tight text-[var(--text-primary)] leading-[1.1]">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--surface)] border border-[var(--border-card)] text-[var(--accent)] text-xs font-extrabold uppercase tracking-wider shadow-sm">
+                <Sparkles size={13} className="text-[var(--accent)]" />
+                <span>Full Stack Developer & Data Scientist</span>
+              </div>
+            </div>
+
+            <h1 className="mt-4 font-display text-4xl sm:text-6xl lg:text-6xl font-black tracking-tight text-[var(--text-primary)] leading-[1.08]">
               Hi all, I'm <span className="text-accent-gradient">{personal.name}</span>{' '}
               <span className="inline-block origin-[70%_70%] animate-wave">👋</span>
             </h1>
 
-            <p className="mt-3.5 font-display font-bold text-lg sm:text-2xl text-[var(--text-primary)]">
+            <p className="mt-3.5 font-display font-bold text-lg sm:text-2xl text-[var(--text-primary)] tracking-tight">
               {personal.headline}
             </p>
 
@@ -77,110 +87,64 @@ export const HeroSection: React.FC = () => {
               </a>
             </div>
 
-            {/* CTAs */}
+            {/* Streamlined CTAs */}
             <div className="mt-8 flex flex-wrap items-center gap-3.5">
               <a href="#projects" className="btn-luxury py-3 px-6 text-sm">
                 Explore Projects <ArrowRight size={16} />
               </a>
+              <a
+                href={personal.resumePdf}
+                target="_blank"
+                rel="noopener noreferrer"
+                download="Raj_Kamal_Resume.pdf"
+                className="px-5 py-3 rounded-full font-extrabold text-sm text-[var(--text-primary)] glass-card hover:bg-[var(--surface-hover)] transition-all hover:scale-105 border border-[var(--border-card)] inline-flex items-center gap-2 shadow-sm"
+              >
+                <Download size={16} className="text-[var(--accent)]" />
+                <span>Resume</span>
+              </a>
               <button
                 type="button"
                 onClick={() => worldStore.setIs3DActive(true)}
-                className="px-5 py-3 rounded-full font-extrabold text-sm text-[var(--text-primary)] glass-panel hover:bg-[var(--surface-hover)] transition-all hover:scale-105 border border-[var(--border-card)] inline-flex items-center gap-2 shadow-sm"
+                className="px-4 py-3 rounded-full font-bold text-xs sm:text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] glass-panel hover:bg-[var(--surface-hover)] transition-all hover:scale-105 border border-[var(--border-card)] inline-flex items-center gap-2 shadow-sm"
               >
-                <Gamepad2 size={18} className="text-[var(--accent)]" />
-                <span>Drive 3D Rover</span>
+                <Gamepad2 size={16} className="text-[var(--accent)]" />
+                <span>3D Rover</span>
               </button>
             </div>
-          </div>
+          </ScrollReveal>
 
-          {/* Right Profile Hub */}
-          <div className="relative flex items-center justify-center">
-            <div className="relative w-full max-w-md">
-              {/* Outer Subtle Ambient Glow */}
-              <div
-                className="absolute -inset-2 rounded-3xl opacity-30 blur-2xl animate-pulse transition-colors duration-700"
-                style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-2))' }}
+          {/* Right Hero Section — Glides from Right */}
+          <ScrollReveal direction="right" distance={45} duration={1000} delay={150} className="w-full">
+            <div className="relative flex items-end justify-center lg:justify-end w-full select-none">
+              <img
+                src="/rajkamal_hero.png"
+                alt={personal.name}
+                className="hero-silhouette-img relative z-10 w-auto h-auto max-h-[480px] sm:max-h-[550px] lg:max-h-[620px] object-contain object-bottom pointer-events-auto"
               />
-
-              {/* Frosted Glass Profile Card */}
-              <div className="relative glass-card rounded-3xl p-6 sm:p-7 border border-[var(--border-card)] overflow-hidden shadow-2xl">
-                <div className="flex items-center gap-4">
-                  <div
-                    className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 shadow-md shrink-0 transition-colors"
-                    style={{ borderColor: 'var(--accent)' }}
-                  >
-                    <img
-                      src={personal.profileImage}
-                      alt={personal.name}
-                      className="w-full h-full object-cover"
-                      onError={e => {
-                        (e.target as HTMLElement).style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-extrabold text-2xl text-[var(--text-primary)]">
-                      {personal.name}
-                    </h3>
-                    <p className="text-xs font-bold text-[var(--accent)]">
-                      {personal.title}
-                    </p>
-                    <p className="text-xs text-[var(--text-muted)] mt-0.5 font-medium">
-                      Problem Solver · Full Stack · ML
-                    </p>
-                  </div>
-                </div>
-
-                {/* Tech Matrix Badges */}
-                <div className="mt-5 grid grid-cols-2 gap-2.5 text-xs font-bold">
-                  <div className="p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] flex items-center gap-2 text-[var(--text-primary)]">
-                    <FileCode2 size={16} className="text-[var(--accent)] shrink-0" />
-                    <span>Python & Full Stack</span>
-                  </div>
-                  <div className="p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] flex items-center gap-2 text-[var(--text-primary)]">
-                    <BrainCircuit size={16} className="text-[var(--accent-2)] shrink-0" />
-                    <span>Chatbots & NLP</span>
-                  </div>
-                  <div className="p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] flex items-center gap-2 text-[var(--text-primary)]">
-                    <Database size={16} className="text-[var(--accent)] shrink-0" />
-                    <span>Data Science & SQL</span>
-                  </div>
-                  <div className="p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] flex items-center gap-2 text-[var(--text-primary)]">
-                    <Code2 size={16} className="text-[var(--accent-2)] shrink-0" />
-                    <span>Java & C++ Logic</span>
-                  </div>
-                </div>
-
-                {/* Code Terminal Snippet */}
-                <div className="mt-5 p-4 rounded-2xl bg-[#09090D] text-slate-200 text-xs font-mono border border-white/10 shadow-inner">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                    <span className="text-[10px] text-slate-400 ml-2">mindset.config.ts</span>
-                  </div>
-                  <p className="text-[#C084FC]">const passion = <span className="text-[var(--accent)]">"Solving real-world problems"</span>;</p>
-                  <p className="text-[#FB7185]">while (learning) buildSoftware();</p>
-                </div>
-              </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid — Staggered Entrance */}
         <div className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5">
-          {personal.stats.map(stat => (
-            <div
+          {personal.stats.map((stat, idx) => (
+            <ScrollReveal
               key={stat.label}
-              className="glass-card rounded-2xl p-5 text-center border border-[var(--border-card)] group"
+              direction={idx % 2 === 0 ? 'left' : 'right'}
+              distance={25}
+              duration={800}
+              delay={idx * 100}
             >
-              <span className="font-display text-2xl sm:text-4xl font-black text-accent-gradient">
-                {stat.value}
-              </span>
-              <p className="mt-1 text-xs sm:text-sm font-bold text-[var(--text-muted)]">
-                {stat.label}
-              </p>
-            </div>
+              <div className="glass-card rounded-2xl p-5 text-center border border-[var(--border-card)] group h-full">
+                <CountUp
+                  value={stat.value}
+                  className="font-display text-2xl sm:text-4xl font-black text-accent-gradient"
+                />
+                <p className="mt-1 text-xs sm:text-sm font-bold text-[var(--text-muted)]">
+                  {stat.label}
+                </p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
