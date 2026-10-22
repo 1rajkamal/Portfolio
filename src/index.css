@@ -1,6 +1,27 @@
+@import 'lenis/dist/lenis.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+html, body {
+  overflow-x: clip;
+}
+
+section, [id] {
+  scroll-margin-top: 5rem;
+}
+
+@media (max-width: 768px) {
+  section, [id] {
+    scroll-margin-top: 4.25rem;
+  }
+}
 
 :root,
 .dark {
@@ -49,7 +70,8 @@ body {
   background-color: var(--bg);
   color: var(--text-primary);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
+  -webkit-overflow-scrolling: touch;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 

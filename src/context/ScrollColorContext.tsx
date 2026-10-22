@@ -264,48 +264,67 @@ export const ScrollColorProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const zones = theme === 'netflix' ? NETFLIX_ZONES : theme === 'light' ? LIGHT_ZONES : DARK_ZONES;
 
+    // Cache section layout positions to eliminate layout thrashing during scroll
+    let cachedSections: { id: string; top: number; height: number }[] = [];
+
+    const measureSections = () => {
+      const scrollY = window.scrollY;
+      cachedSections = zones.map(z => {
+        const el = document.getElementById(z.id);
+        if (!el) return { id: z.id, top: 0, height: 0 };
+        const rect = el.getBoundingClientRect();
+        return {
+          id: z.id,
+          top: rect.top + scrollY,
+          height: rect.height || window.innerHeight
+        };
+      });
+    };
+
+    measureSections();
+
+    // Re-measure on resize or orientation change
+    window.addEventListener('resize', measureSections, { passive: true });
+    window.addEventListener('orientationchange', measureSections, { passive: true });
+    const timer = setTimeout(measureSections, 500);
+
+    let lastZoneId = '';
+
     const updateColors = () => {
       const scrollY = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? Math.min(1, Math.max(0, scrollY / docHeight)) : 0;
       setScrollProgress(progress);
 
-      // Collect section positions
-      const sectionElements = zones.map(z => ({
-        zone: z,
-        el: document.getElementById(z.id)
-      }));
+      if (cachedSections.length === 0) return;
 
-      // Find active zone index and progress between current and next zone
+      const triggerLine = scrollY + window.innerHeight * 0.45;
       let currentIdx = 0;
       let blendProgress = 0;
 
-      for (let i = 0; i < sectionElements.length; i++) {
-        const item = sectionElements[i];
-        if (item.el) {
-          const rect = item.el.getBoundingClientRect();
-          const top = rect.top;
-          const height = rect.height;
-
-          // If this section is currently visible in the viewport
-          if (top <= window.innerHeight * 0.45 && top + height > window.innerHeight * 0.45) {
-            currentIdx = i;
-            // Progress within current section towards next section
-            const scrolledInside = window.innerHeight * 0.45 - top;
-            blendProgress = Math.min(1, Math.max(0, scrolledInside / Math.max(1, height)));
-            break;
-          }
+      for (let i = 0; i < cachedSections.length; i++) {
+        const item = cachedSections[i];
+        if (triggerLine >= item.top && triggerLine < item.top + item.height) {
+          currentIdx = i;
+          const scrolledInside = triggerLine - item.top;
+          blendProgress = Math.min(1, Math.max(0, scrolledInside / Math.max(1, item.height)));
+          break;
+        } else if (triggerLine >= item.top) {
+          currentIdx = i;
         }
       }
 
       const currentZone = zones[currentIdx];
       const nextZone = zones[Math.min(zones.length - 1, currentIdx + 1)];
-      setActiveZoneId(currentZone.id);
+      
+      if (lastZoneId !== currentZone.id) {
+        lastZoneId = currentZone.id;
+        setActiveZoneId(currentZone.id);
+      }
 
       const root = document.documentElement;
 
       if (prefersReducedMotion) {
-        // Snap instantly at boundaries
         root.style.setProperty('--bg', currentZone.bg);
         root.style.setProperty('--surface', currentZone.surface);
         root.style.setProperty('--text-primary', currentZone.textPrimary);
@@ -314,7 +333,6 @@ export const ScrollColorProvider: React.FC<{ children: React.ReactNode }> = ({ c
         root.style.setProperty('--accent-2', currentZone.accent2);
         root.style.setProperty('--glow', currentZone.glow);
       } else {
-        // Smoothly interpolate RGB between zones
         const interpolatedBg = lerpColor(currentZone.bg, nextZone.bg, blendProgress);
         const interpolatedSurface = lerpColor(currentZone.surface, nextZone.surface, blendProgress);
         const interpolatedTextPrimary = lerpColor(currentZone.textPrimary, nextZone.textPrimary, blendProgress);
@@ -342,6 +360,9 @@ export const ScrollColorProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     return () => {
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', measureSections);
+      window.removeEventListener('orientationchange', measureSections);
+      clearTimeout(timer);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [theme]);

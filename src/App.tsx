@@ -21,6 +21,9 @@ import { worldStore, useWorldStore } from './context/World3DState';
 import { RIntroRibbon } from './components/RIntroRibbon';
 import { WhoIsWatching, NETFLIX_PROFILES, NetflixProfile } from './components/WhoIsWatching';
 
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+
 // Code-split heavy 3D engine and MediaPipe AI models for instantaneous 2D portfolio load
 const WorldCanvas = lazy(() => import('./components/3d/WorldCanvas').then(m => ({ default: m.WorldCanvas })));
 const JarvisHoloHUD = lazy(() => import('./components/JarvisHoloHUD').then(m => ({ default: m.JarvisHoloHUD })));
@@ -81,6 +84,39 @@ export const AppContent: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Initialize Lenis for silky-smooth momentum scrolling on desktop and mobile phones
+  useEffect(() => {
+    if (is3DActive) return;
+
+    const lenis = new Lenis({
+      duration: 1.15,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      syncTouch: true,
+      syncTouchLerp: 0.08,
+      touchInertiaExponent: 1.6,
+      touchMultiplier: 1.15,
+      autoRaf: true,
+      anchors: { offset: -75 }
+    });
+
+    (window as any).__lenis = lenis;
+
+    // Prevent background scrolling while modal intro / profile selector is active
+    if (introActive || profileActive || terminalOpen || !hasEnteredPortfolio) {
+      lenis.stop();
+    } else {
+      lenis.start();
+    }
+
+    return () => {
+      lenis.destroy();
+      delete (window as any).__lenis;
+    };
+  }, [is3DActive, introActive, profileActive, terminalOpen, hasEnteredPortfolio]);
+
   // When switching from 3D back to 2D portfolio, auto-scroll to the requested hash target
   useEffect(() => {
     if (!is3DActive && window.location.hash && window.location.hash !== '#3d') {
@@ -88,7 +124,12 @@ export const AppContent: React.FC = () => {
       const scrollAttempt = (count = 0) => {
         const el = document.getElementById(targetId);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const lenis = (window as any).__lenis;
+          if (lenis) {
+            lenis.scrollTo(el, { offset: -75, duration: 1.1 });
+          } else {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         } else if (count < 20) {
           setTimeout(() => scrollAttempt(count + 1), 40);
         }
@@ -105,7 +146,7 @@ export const AppContent: React.FC = () => {
         </Suspense>
       ) : (
         <div
-          className={`min-h-screen flex flex-col transition-opacity duration-700 relative overflow-x-hidden ${
+          className={`min-h-screen flex flex-col transition-opacity duration-700 relative overflow-x-clip ${
             !hasEnteredPortfolio ? 'opacity-0 pointer-events-none invisible h-0 overflow-hidden' : 'opacity-100 visible'
           }`}
         >

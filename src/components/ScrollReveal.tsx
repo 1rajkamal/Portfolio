@@ -74,6 +74,9 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     }
   };
 
+  const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches);
+  const shouldBlur = blur && !isMobile;
+
   return (
     <div
       ref={ref}
@@ -81,9 +84,11 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
       style={{
         opacity: isVisible ? 1 : 0,
         transform: getTransform(),
-        filter: blur ? (isVisible ? 'blur(0px)' : 'blur(4px)') : undefined,
-        transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, filter ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
-        willChange: 'opacity, transform, filter'
+        filter: shouldBlur ? (isVisible ? 'blur(0px)' : 'blur(4px)') : undefined,
+        transition: shouldBlur
+          ? `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, filter ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`
+          : `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+        willChange: shouldBlur ? 'opacity, transform, filter' : 'opacity, transform'
       }}
     >
       {children}

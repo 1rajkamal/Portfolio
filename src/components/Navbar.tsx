@@ -44,6 +44,23 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const id = href.replace('#', '');
+      const target = document.getElementById(id);
+      if (target) {
+        const lenis = (window as any).__lenis;
+        if (lenis) {
+          lenis.scrollTo(target, { offset: -70, duration: 1.1 });
+        } else {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+      setMobileMenuOpen(false);
+    }
+  };
+
   const navLinks = [
     { label: 'Home', href: '#home' },
     { label: 'About', href: '#about' },
@@ -64,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand Logo */}
-        <a href="#home" className="flex items-center gap-2.5 group">
+        <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="flex items-center gap-2.5 group">
           <div
             className={`w-10 h-10 rounded-2xl p-0.5 shadow-md group-hover:scale-105 transition-transform ${
               theme === 'netflix' ? 'ring-2 ring-[#E50914]/50' : ''
@@ -96,6 +113,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <a
               key={link.label}
               href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
               className="px-3.5 py-1.5 rounded-full text-xs font-bold text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-black/5 dark:hover:bg-white/5 transition-all"
             >
               {link.label}
@@ -350,7 +368,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <a
                 key={link.label}
                 href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className="px-4 py-2.5 rounded-2xl text-sm font-bold text-[var(--text-primary)] hover:text-[var(--accent)] hover:bg-black/5 dark:hover:bg-white/5 transition-all"
               >
                 {link.label}

@@ -10,11 +10,24 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
+      html {
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+      }
       html, body {
         background-color: #141414;
         color: #F8FAFC;
         margin: 0;
         padding: 0;
+        overflow-x: clip;
+      }
+      section, [id] {
+        scroll-margin-top: 5rem;
+      }
+      @media (max-width: 768px) {
+        section, [id] {
+          scroll-margin-top: 4.25rem;
+        }
       }
       html.dark, html.dark body {
         background-color: #141414;
