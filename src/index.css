@@ -4,31 +4,45 @@
 
 :root,
 .dark {
-  /* Default Dark: Midnight Luxury */
+  /* Dark Mode: Luxury Metallic Champagne Gold & Warm Amber */
   --bg: #0A0A0F;
   --surface: #14141C;
   --surface-hover: #1C1C27;
   --text-primary: #F8FAFC;
   --text-muted: #94A3B8;
   --accent: #D4AF37;
-  --accent-2: #7C5CFF;
-  --glow: rgba(212, 175, 55, 0.22);
+  --accent-2: #F59E0B;
+  --glow: rgba(212, 175, 55, 0.25);
   --border-card: rgba(255, 255, 255, 0.08);
-  --border-card-hover: rgba(212, 175, 55, 0.4);
+  --border-card-hover: rgba(212, 175, 55, 0.45);
 }
 
 .light {
-  /* Ultra-Crisp High-Contrast Light Theme for Mobile & Desktop */
+  /* Light Mode: Executive Royal Sapphire & Imperial Cobalt */
   --bg: #F8FAFC;
   --surface: #FFFFFF;
   --surface-hover: #F1F5F9;
-  --text-primary: #020617; /* Slate 950 - deepest black for ultra-sharp readability */
-  --text-muted: #1E293B; /* Slate 800 - high contrast dark text, 0 wash-out */
-  --accent: #B91C1C; /* Crisp warm crimson */
-  --accent-2: #0D9488; /* Crisp emerald teal */
-  --glow: rgba(185, 28, 28, 0.15);
-  --border-card: rgba(15, 23, 42, 0.14);
-  --border-card-hover: rgba(185, 28, 28, 0.6);
+  --text-primary: #020617;
+  --text-muted: #334155;
+  --accent: #2563EB;
+  --accent-2: #0284C7;
+  --glow: rgba(37, 99, 235, 0.15);
+  --border-card: rgba(15, 23, 42, 0.12);
+  --border-card-hover: rgba(37, 99, 235, 0.5);
+}
+
+.netflix {
+  /* Netflix Mode: Authentic Crimson Red & Deep Dark */
+  --bg: #141414;
+  --surface: #181818;
+  --surface-hover: #232323;
+  --text-primary: #FFFFFF;
+  --text-muted: #A3A3A3;
+  --accent: #E50914;
+  --accent-2: #FF3843;
+  --glow: rgba(229, 9, 20, 0.4);
+  --border-card: rgba(255, 255, 255, 0.12);
+  --border-card-hover: rgba(229, 9, 20, 0.65);
 }
 
 body {
@@ -43,6 +57,29 @@ body {
   background-color: #F8FAFC;
   color: #020617;
 }
+
+.netflix body {
+  background-color: #141414;
+  color: #FFFFFF;
+}
+
+.netflix .btn-luxury {
+  color: #FFFFFF;
+  background: #E50914;
+  box-shadow: 0 10px 25px -5px rgba(229, 9, 20, 0.5);
+}
+
+.netflix .btn-luxury:hover {
+  background: linear-gradient(135deg, #E50914 0%, #B81D24 100%);
+  box-shadow: 0 15px 35px -5px rgba(229, 9, 20, 0.75);
+}
+
+.netflix .glass-card:hover {
+  border-color: #E50914;
+  box-shadow: 0 22px 48px -10px rgba(229, 9, 20, 0.45),
+              inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+}
+
 
 /* Dynamic Scroll-Reactive Luxury Button */
 .btn-luxury {
@@ -133,6 +170,56 @@ body {
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* 1. NETFLIX THEME: Authentic Netflix Crimson Red */
+.netflix .text-name-luxury {
+  background: linear-gradient(135deg, #FFFFFF 5%, #FF2B36 45%, #E50914 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 24px rgba(229, 9, 20, 0.5));
+  display: inline-block;
+}
+
+.netflix .text-role-luxury {
+  background: linear-gradient(135deg, #FFFFFF 15%, #FFA8AE 50%, #E50914 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 14px rgba(229, 9, 20, 0.35));
+}
+
+/* 2. DARK THEME: Prestigious Metallic Champagne Gold & Amber */
+.text-name-luxury,
+.dark .text-name-luxury {
+  background: linear-gradient(135deg, #FFFFFF 10%, #F6D365 40%, #D4AF37 75%, #B8860B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 22px rgba(212, 175, 55, 0.45));
+  display: inline-block;
+}
+
+.text-role-luxury,
+.dark .text-role-luxury {
+  background: linear-gradient(135deg, #FFFFFF 20%, #FDE68A 55%, #F59E0B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 14px rgba(245, 158, 11, 0.35));
+}
+
+/* 3. LIGHT THEME: Executive Royal Sapphire & Imperial Deep Cobalt */
+.light .text-name-luxury {
+  background: linear-gradient(135deg, #020617 5%, #1E3A8A 45%, #2563EB 85%, #0284C7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 10px rgba(37, 99, 235, 0.25));
+  display: inline-block;
+}
+
+.light .text-role-luxury {
+  background: linear-gradient(135deg, #0F172A 15%, #1D4ED8 60%, #0284C7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 8px rgba(37, 99, 235, 0.15));
 }
 
 /* 3D Root Container */

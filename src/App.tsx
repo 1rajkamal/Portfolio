@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { ScrollColorProvider } from './context/ScrollColorContext';
 import { Navbar } from './components/Navbar';
@@ -18,6 +18,8 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { AmbientSpotlight } from './components/AmbientSpotlight';
 import { worldStore, useWorldStore } from './context/World3DState';
+import { RIntroRibbon } from './components/RIntroRibbon';
+import { WhoIsWatching, NETFLIX_PROFILES, NetflixProfile } from './components/WhoIsWatching';
 
 // Code-split heavy 3D engine and MediaPipe AI models for instantaneous 2D portfolio load
 const WorldCanvas = lazy(() => import('./components/3d/WorldCanvas').then(m => ({ default: m.WorldCanvas })));
@@ -27,6 +29,23 @@ export const AppContent: React.FC = () => {
   const is3DActive = useWorldStore(s => s.is3DActive);
   const terminalOpen = useWorldStore(s => s.terminalOpen);
   const matrixActive = useWorldStore(s => s.matrixActive);
+
+  // Smooth Netflix Flow: Intro -> Who's Watching -> Main Portfolio
+  const [introActive, setIntroActive] = useState<boolean>(true);
+  const [profileActive, setProfileActive] = useState<boolean>(true);
+  const [hasEnteredPortfolio, setHasEnteredPortfolio] = useState<boolean>(false);
+
+  const [currentProfile, setCurrentProfile] = useState<NetflixProfile>(() => {
+    try {
+      const saved = localStorage.getItem('rk_selected_profile');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const match = NETFLIX_PROFILES.find(p => p.id === parsed.id);
+        if (match) return match;
+      }
+    } catch {}
+    return NETFLIX_PROFILES[0];
+  });
 
   useEffect(() => {
     // Strict hash/pathname check for 3D world on initial load
@@ -85,11 +104,20 @@ export const AppContent: React.FC = () => {
           <WorldCanvas />
         </Suspense>
       ) : (
-        <div className="min-h-screen flex flex-col transition-colors duration-300 relative overflow-x-hidden">
+        <div
+          className={`min-h-screen flex flex-col transition-opacity duration-700 relative overflow-x-hidden ${
+            !hasEnteredPortfolio ? 'opacity-0 pointer-events-none invisible h-0 overflow-hidden' : 'opacity-100 visible'
+          }`}
+        >
           <ScrollProgressBar />
           <AmbientSpotlight />
           <ScrollColorBackdrop />
-          <Navbar />
+          <Navbar
+            onOpenProfiles={() => setProfileActive(true)}
+            onReplayIntro={() => setIntroActive(true)}
+            activeProfileAvatar={currentProfile.avatar}
+            activeProfileName={currentProfile.name}
+          />
           <main className="flex-1">
             <HeroSection />
             <AboutSection />
@@ -103,6 +131,33 @@ export const AppContent: React.FC = () => {
           <Footer />
         </div>
       )}
+
+      {/* Cinematic Red "R" Ribbon Intro Animation (Layered on top at z-[99999]) */}
+      {introActive && (
+        <RIntroRibbon
+          onComplete={() => {
+            setIntroActive(false);
+            if (!hasEnteredPortfolio) {
+              setProfileActive(true);
+            }
+          }}
+        />
+      )}
+
+      {/* Netflix-Style "Who's Watching?" Profile Selector (Positioned directly under Intro at z-[99990]) */}
+      <WhoIsWatching
+        isOpen={profileActive}
+        isIntroActive={introActive}
+        onSelectProfile={(profile) => {
+          setCurrentProfile(profile);
+          try {
+            localStorage.setItem('rk_selected_profile', JSON.stringify(profile));
+          } catch {}
+          setProfileActive(false);
+          setHasEnteredPortfolio(true);
+        }}
+        onClose={hasEnteredPortfolio ? () => setProfileActive(false) : undefined}
+      />
 
       {/* Global Developer Terminal Console */}
       <TerminalModal

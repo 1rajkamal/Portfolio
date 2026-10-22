@@ -108,7 +108,7 @@ export const TypewriterText: React.FC<TypewriterTextProps> = ({
       aria-label={`Role: ${currentRole}`}
     >
       <span
-        className={`font-display font-extrabold tracking-tight text-accent-gradient inline ${textClassName}`}
+        className={`font-display font-extrabold tracking-tight inline ${textClassName || 'text-role-luxury'}`}
       >
         {displayText}
         {/* Invisible zero-width character ensures height never collapses when displayText is empty */}
@@ -119,7 +119,7 @@ export const TypewriterText: React.FC<TypewriterTextProps> = ({
         )}
         <span
           aria-hidden="true"
-          className={`inline-block ml-1 font-mono font-medium text-[var(--accent)] select-none text-typing-cursor ${cursorClassName}`}
+          className={`inline-block ml-1 font-mono font-extrabold text-[var(--accent)] select-none text-typing-cursor ${cursorClassName}`}
         >
           |
         </span>

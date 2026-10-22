@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Moon, Sun, Gamepad2, Menu, X, Terminal, Hand } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { Moon, Sun, Gamepad2, Menu, X, Terminal, Hand, Tv, RotateCcw } from 'lucide-react';
+import { useTheme, Theme } from '../context/ThemeContext';
 import { worldStore } from '../context/World3DState';
 import { jarvisStore, useJarvisStore } from '../context/JarvisVisionState';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 
-export const Navbar: React.FC = () => {
-  const { theme, toggleTheme } = useTheme();
+interface NavbarProps {
+  onOpenProfiles?: () => void;
+  onReplayIntro?: () => void;
+  activeProfileAvatar?: string;
+  activeProfileName?: string;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({
+  onOpenProfiles,
+  onReplayIntro,
+  activeProfileAvatar = '/avatars/raj.jpg',
+  activeProfileName = 'Raj Kamal'
+}) => {
+  const { theme, toggleTheme, setTheme } = useTheme();
   const isJarvisActive = useJarvisStore(s => s.isActive);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -54,11 +66,18 @@ export const Navbar: React.FC = () => {
         {/* Brand Logo */}
         <a href="#home" className="flex items-center gap-2.5 group">
           <div
-            className="w-10 h-10 rounded-2xl p-0.5 shadow-md group-hover:scale-105 transition-transform"
-            style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-2))' }}
+            className={`w-10 h-10 rounded-2xl p-0.5 shadow-md group-hover:scale-105 transition-transform ${
+              theme === 'netflix' ? 'ring-2 ring-[#E50914]/50' : ''
+            }`}
+            style={{
+              background:
+                theme === 'netflix'
+                  ? 'linear-gradient(135deg, #E50914, #B81D24)'
+                  : 'linear-gradient(135deg, var(--accent), var(--accent-2))'
+            }}
           >
             <div className="w-full h-full bg-[var(--surface)] rounded-[14px] flex items-center justify-center font-black text-sm text-[var(--accent)]">
-              RK
+              {theme === 'netflix' ? <span className="text-[#E50914]">RK</span> : 'RK'}
             </div>
           </div>
           <div className="flex flex-col">
@@ -94,7 +113,7 @@ export const Navbar: React.FC = () => {
                   : 'text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-black/5 dark:hover:bg-white/5'
               }`}
               aria-label="Open Jarvis Vision and Developer Terminal tools"
-              title="More Features (Jarvis Vision & Developer Terminal)"
+              title="More Features (Jarvis Vision, Terminal, Profiles & Intro)"
             >
               <Menu size={16} />
               {isJarvisActive && (
@@ -106,7 +125,7 @@ export const Navbar: React.FC = () => {
             {toolsMenuOpen && (
               <div className="absolute top-full right-0 mt-3 w-64 rounded-2xl glass-panel p-2.5 border border-[var(--border-card)] shadow-2xl z-50 animate-fadeIn backdrop-blur-2xl">
                 <div className="px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-muted)] flex items-center justify-between border-b border-[var(--border-card)] pb-2 mb-1.5">
-                  <span>Interactive Tools</span>
+                  <span>Interactive Features</span>
                   <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-mono font-bold">
                     {isJarvisActive ? '1 Active' : 'Ready'}
                   </span>
@@ -175,6 +194,64 @@ export const Navbar: React.FC = () => {
                       ⌘K
                     </span>
                   </button>
+
+                  {/* Who's Watching Profile Switcher Option */}
+                  {onOpenProfiles && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onOpenProfiles();
+                        setToolsMenuOpen(false);
+                      }}
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl text-left text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-primary)] transition-all group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="p-2 rounded-lg bg-[#E50914]/10 text-[#E50914] group-hover:bg-[#E50914]/20 transition-colors">
+                          <Tv size={16} />
+                        </div>
+                        <div>
+                          <div className="font-bold flex items-center gap-1.5">
+                            <span>Who&apos;s Watching?</span>
+                            <span className="px-1.5 py-0.2 text-[8px] uppercase rounded-full font-extrabold bg-[#E50914]/20 text-[#E50914] border border-[#E50914]/30">
+                              PROFILES
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-[var(--text-muted)] font-normal">
+                            Switch viewer profile
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  )}
+
+                  {/* Replay R Intro Animation */}
+                  {onReplayIntro && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onReplayIntro();
+                        setToolsMenuOpen(false);
+                      }}
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl text-left text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-primary)] transition-all group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="p-2 rounded-lg bg-red-500/10 text-red-400 group-hover:bg-red-500/20 transition-colors">
+                          <RotateCcw size={16} />
+                        </div>
+                        <div>
+                          <div className="font-bold flex items-center gap-1.5">
+                            <span>Replay Intro</span>
+                            <span className="px-1.5 py-0.2 text-[8px] uppercase rounded-full font-extrabold bg-red-500/20 text-red-400">
+                              3D R
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-[var(--text-muted)] font-normal">
+                            Play ribbon animation
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -182,23 +259,69 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2.5">
-          {/* Theme Toggle Button */}
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Theme Selector: Dark -> Light -> Netflix */}
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border-card)] text-[var(--text-muted)] hover:text-[var(--accent)] hover:scale-105 transition-all shadow-sm"
-            aria-label="Toggle theme"
-            title="Toggle Light / Dark mode"
+            className={`px-3 py-2 rounded-2xl border transition-all duration-300 shadow-sm flex items-center gap-1.5 ${
+              theme === 'netflix'
+                ? 'bg-[#E50914]/20 border-[#E50914] text-[#E50914] shadow-[0_0_15px_rgba(229,9,20,0.4)]'
+                : 'bg-[var(--surface)] border-[var(--border-card)] text-[var(--text-muted)] hover:text-[var(--accent)] hover:scale-105'
+            }`}
+            aria-label="Toggle theme mode"
+            title={`Active Theme: ${theme.toUpperCase()} (Click to cycle Dark / Light / Netflix mode)`}
           >
-            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+            {theme === 'dark' ? (
+              <>
+                <Moon size={16} className="text-amber-300" />
+                <span className="hidden lg:inline text-xs font-bold">Dark</span>
+              </>
+            ) : theme === 'light' ? (
+              <>
+                <Sun size={16} className="text-amber-500" />
+                <span className="hidden lg:inline text-xs font-bold">Light</span>
+              </>
+            ) : (
+              <>
+                <div className="w-2 h-2 rounded-full bg-[#E50914] animate-ping" />
+                <span className="text-xs font-extrabold text-[#E50914] tracking-wider">NETFLIX</span>
+              </>
+            )}
           </button>
+
+          {/* Profile Avatar Trigger ("Who's Watching?") */}
+          {onOpenProfiles && (
+            <button
+              type="button"
+              onClick={onOpenProfiles}
+              className={`relative p-0.5 rounded-xl border transition-all overflow-hidden ${
+                theme === 'netflix'
+                  ? 'border-[#E50914] shadow-[0_0_10px_rgba(229,9,20,0.5)]'
+                  : 'border-[var(--border-card)] hover:border-[var(--accent)] hover:scale-105'
+              }`}
+              title={`Active Profile: ${activeProfileName} (Click to switch)`}
+              aria-label="Open Profile Selector"
+            >
+              <img
+                src={activeProfileAvatar}
+                alt={activeProfileName}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-[9px] object-cover"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.indexOf('me.jpg') === -1) {
+                    target.src = '/me.jpg';
+                  }
+                }}
+              />
+            </button>
+          )}
 
           {/* 3D World Button */}
           <button
             type="button"
             onClick={() => worldStore.setIs3DActive(true)}
-            className="btn-luxury py-2 px-4 text-xs"
+            className="btn-luxury py-2 px-3 sm:px-4 text-xs"
           >
             <Gamepad2 size={15} />
             <span className="hidden sm:inline">3D World</span>

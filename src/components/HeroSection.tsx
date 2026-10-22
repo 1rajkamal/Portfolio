@@ -41,14 +41,14 @@ export const HeroSection: React.FC = () => {
             </div>
 
             <h1 className="mt-4 font-display text-4xl sm:text-6xl lg:text-6xl font-black tracking-tight text-[var(--text-primary)] leading-[1.08]">
-              Hi all, I'm <span className="text-accent-gradient">{personal.name}</span>{' '}
+              Hi all, I'm <span className="text-name-luxury">{personal.name}</span>{' '}
               <span className="inline-block origin-[70%_70%] animate-wave">👋</span>
             </h1>
 
             <div className="mt-3.5">
               <TypewriterText
                 roles={HERO_ROLES}
-                textClassName="text-xl sm:text-2xl lg:text-3xl font-extrabold"
+                textClassName="text-xl sm:text-2xl lg:text-3xl font-extrabold text-role-luxury"
               />
             </div>
 

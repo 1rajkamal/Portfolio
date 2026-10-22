@@ -14,16 +14,16 @@ export interface ZoneColorConfig {
 
 // Dark Mode Curated Luxury Palette Zones (Midnight, Emerald, Violet, Amber, Ocean)
 export const DARK_ZONES: ZoneColorConfig[] = [
-  // 1. Hero: Midnight Luxury (#0A0A0F + Gold & Violet)
+  // 1. Hero: Midnight Luxury Champagne Gold & Warm Amber
   {
     id: 'home',
     bg: '#0A0A0F',
     surface: '#14141C',
     textPrimary: '#F8FAFC',
     textMuted: '#94A3B8',
-    accent: '#D4AF37',      // Muted Gold
-    accent2: '#7C5CFF',     // Electric Violet
-    glow: 'rgba(212, 175, 55, 0.22)'
+    accent: '#D4AF37',      // Champagne Gold
+    accent2: '#F59E0B',     // Warm Amber Gold
+    glow: 'rgba(212, 175, 55, 0.25)'
   },
   // 2. About: Charcoal & Soft Violet (#0E0E12 + Violet & Rose)
   {
@@ -152,6 +152,70 @@ export const LIGHT_ZONES: ZoneColorConfig[] = [
   }
 ];
 
+// Netflix Theme Curated Authentic Red Zones
+export const NETFLIX_ZONES: ZoneColorConfig[] = [
+  {
+    id: 'home',
+    bg: '#141414',
+    surface: '#181818',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A3A3A3',
+    accent: '#E50914',      // Netflix Red
+    accent2: '#FF3843',     // Crimson
+    glow: 'rgba(229, 9, 20, 0.4)'
+  },
+  {
+    id: 'about',
+    bg: '#141414',
+    surface: '#181818',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A3A3A3',
+    accent: '#E50914',
+    accent2: '#B81D24',
+    glow: 'rgba(229, 9, 20, 0.35)'
+  },
+  {
+    id: 'skills',
+    bg: '#141414',
+    surface: '#181818',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A3A3A3',
+    accent: '#E50914',
+    accent2: '#FF4D4D',
+    glow: 'rgba(229, 9, 20, 0.35)'
+  },
+  {
+    id: 'projects',
+    bg: '#141414',
+    surface: '#181818',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A3A3A3',
+    accent: '#E50914',
+    accent2: '#B81D24',
+    glow: 'rgba(229, 9, 20, 0.4)'
+  },
+  {
+    id: 'certifications',
+    bg: '#141414',
+    surface: '#181818',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A3A3A3',
+    accent: '#E50914',
+    accent2: '#FF3843',
+    glow: 'rgba(229, 9, 20, 0.35)'
+  },
+  {
+    id: 'contact',
+    bg: '#141414',
+    surface: '#181818',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A3A3A3',
+    accent: '#E50914',
+    accent2: '#B81D24',
+    glow: 'rgba(229, 9, 20, 0.4)'
+  }
+];
+
 // Helper to convert hex to RGB
 function hexToRgb(hex: string): [number, number, number] {
   let c = hex.replace('#', '');
@@ -198,7 +262,7 @@ export const ScrollColorProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const zones = theme === 'light' ? LIGHT_ZONES : DARK_ZONES;
+    const zones = theme === 'netflix' ? NETFLIX_ZONES : theme === 'light' ? LIGHT_ZONES : DARK_ZONES;
 
     const updateColors = () => {
       const scrollY = window.scrollY;
