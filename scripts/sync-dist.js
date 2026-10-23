@@ -45,3 +45,17 @@ if (fs.existsSync(distAssetsDir)) {
   }
   console.log(`✓ Cleaned & synced ${files.length} fresh assets from dist/assets -> ./assets`);
 }
+
+// 5. Ensure root ./avatars/ has all avatars from public/avatars/
+const publicAvatarsDir = path.resolve(rootDir, 'public', 'avatars');
+const rootAvatarsDir = path.resolve(rootDir, 'avatars');
+if (fs.existsSync(publicAvatarsDir)) {
+  if (!fs.existsSync(rootAvatarsDir)) {
+    fs.mkdirSync(rootAvatarsDir, { recursive: true });
+  }
+  const avatarFiles = fs.readdirSync(publicAvatarsDir);
+  for (const file of avatarFiles) {
+    fs.copyFileSync(path.resolve(publicAvatarsDir, file), path.resolve(rootAvatarsDir, file));
+  }
+  console.log(`✓ Synced ${avatarFiles.length} avatars -> ./avatars`);
+}

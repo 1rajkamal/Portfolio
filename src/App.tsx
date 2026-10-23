@@ -33,11 +33,10 @@ export const AppContent: React.FC = () => {
   const terminalOpen = useWorldStore(s => s.terminalOpen);
   const matrixActive = useWorldStore(s => s.matrixActive);
 
-  // Check if user navigated directly to a specific section anchor (e.g. #projects, #contact)
-  const isDirectSection = typeof window !== 'undefined' && Boolean(window.location.hash && window.location.hash !== '#3d');
-  const [introActive, setIntroActive] = useState<boolean>(() => !isDirectSection);
-  const [profileActive, setProfileActive] = useState<boolean>(() => !isDirectSection);
-  const [hasEnteredPortfolio, setHasEnteredPortfolio] = useState<boolean>(() => isDirectSection);
+  // Smooth Netflix Flow: Intro -> Who's Watching -> Main Portfolio
+  const [introActive, setIntroActive] = useState<boolean>(true);
+  const [profileActive, setProfileActive] = useState<boolean>(true);
+  const [hasEnteredPortfolio, setHasEnteredPortfolio] = useState<boolean>(false);
 
   const [currentProfile, setCurrentProfile] = useState<NetflixProfile>(() => {
     try {
@@ -198,10 +197,7 @@ export const AppContent: React.FC = () => {
           setProfileActive(false);
           setHasEnteredPortfolio(true);
         }}
-        onClose={() => {
-          setProfileActive(false);
-          setHasEnteredPortfolio(true);
-        }}
+        onClose={hasEnteredPortfolio ? () => setProfileActive(false) : undefined}
       />
 
       {/* Global Developer Terminal Console */}
