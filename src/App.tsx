@@ -141,7 +141,7 @@ export const AppContent: React.FC = () => {
   return (
     <>
       {is3DActive ? (
-        <Suspense fallback={<div className="w3d-root flex items-center justify-center bg-[#0A0A0F] text-cyan-400 font-mono text-xs">INITIALIZING 3D WORLD...</div>}>
+        <Suspense fallback={<div className="w3d-root flex items-center justify-center bg-black text-cyan-400 font-mono text-xs">INITIALIZING 3D WORLD...</div>}>
           <WorldCanvas />
         </Suspense>
       ) : (

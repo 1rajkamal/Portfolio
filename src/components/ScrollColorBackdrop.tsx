@@ -25,7 +25,7 @@ export const ScrollColorBackdrop: React.FC = () => {
       >
         {/* Top-Left Ambient Orb (Subtle 10% parallax) */}
         <div
-          className="absolute -left-36 -top-36 h-[26rem] w-[26rem] md:h-[38rem] md:w-[38rem] rounded-full blur-[60px] md:blur-[150px] opacity-10 dark:opacity-30 transition-colors duration-700 ease-out will-change-transform"
+          className="absolute -left-36 -top-36 h-[26rem] w-[26rem] md:h-[38rem] md:w-[38rem] rounded-full blur-[60px] md:blur-[150px] opacity-10 dark:opacity-10 transition-colors duration-700 ease-out will-change-transform"
           style={{
             backgroundColor: 'var(--accent)',
             transform: `translate3d(0, ${scrollProgress * 40}px, 0)`
@@ -34,7 +34,7 @@ export const ScrollColorBackdrop: React.FC = () => {
 
         {/* Center-Right Ambient Orb (Subtle -12% parallax) */}
         <div
-          className="absolute -right-36 top-1/3 h-[24rem] w-[24rem] md:h-[34rem] md:w-[34rem] rounded-full blur-[60px] md:blur-[150px] opacity-10 dark:opacity-25 transition-colors duration-700 ease-out will-change-transform"
+          className="absolute -right-36 top-1/3 h-[24rem] w-[24rem] md:h-[34rem] md:w-[34rem] rounded-full blur-[60px] md:blur-[150px] opacity-10 dark:opacity-8 transition-colors duration-700 ease-out will-change-transform"
           style={{
             backgroundColor: 'var(--accent-2)',
             transform: `translate3d(0, ${-scrollProgress * 50}px, 0)`
@@ -43,7 +43,7 @@ export const ScrollColorBackdrop: React.FC = () => {
 
         {/* Bottom Ambient Orb */}
         <div
-          className="absolute left-1/3 bottom-10 h-[22rem] w-[22rem] md:h-[32rem] md:w-[32rem] rounded-full blur-[60px] md:blur-[160px] opacity-10 dark:opacity-20 transition-colors duration-700 ease-out will-change-transform"
+          className="absolute left-1/3 bottom-10 h-[22rem] w-[22rem] md:h-[32rem] md:w-[32rem] rounded-full blur-[60px] md:blur-[160px] opacity-10 dark:opacity-7 transition-colors duration-700 ease-out will-change-transform"
           style={{
             backgroundColor: 'var(--accent)',
             transform: `translate3d(0, ${scrollProgress * 30}px, 0)`

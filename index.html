@@ -15,8 +15,8 @@
         -webkit-overflow-scrolling: touch;
       }
       html, body {
-        background-color: #141414;
-        color: #F8FAFC;
+        background-color: #000000;
+        color: #FFFFFF;
         margin: 0;
         padding: 0;
         overflow-x: clip;
@@ -30,8 +30,8 @@
         }
       }
       html.dark, html.dark body {
-        background-color: #141414;
-        color: #F8FAFC;
+        background-color: #000000;
+        color: #FFFFFF;
         margin: 0;
         padding: 0;
       }
@@ -54,15 +54,15 @@
         document.documentElement.classList.remove('dark', 'light', 'netflix');
         if (theme === 'light') {
           document.documentElement.classList.add('light');
-        } else if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
+        } else if (theme === 'netflix') {
           document.documentElement.classList.add('netflix');
+        } else {
+          document.documentElement.classList.add('dark');
         }
       } catch (e) {}
     </script>
   </head>
-  <body class="font-sans antialiased selection:bg-[var(--accent)] selection:text-white min-h-screen overflow-x-hidden bg-[#141414]">
+  <body class="font-sans antialiased selection:bg-[var(--accent)] selection:text-white min-h-screen overflow-x-hidden bg-[#000000]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

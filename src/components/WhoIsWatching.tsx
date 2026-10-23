@@ -127,7 +127,7 @@ export const WhoIsWatching: React.FC<WhoIsWatchingProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label="Profile Selection - Who's watching?"
-      className={`fixed inset-0 z-[99990] bg-[#141414] text-white flex flex-col items-center justify-center p-6 transition-all duration-700 ease-out overflow-y-auto select-none ${
+      className={`fixed inset-0 z-[99990] bg-black text-white flex flex-col items-center justify-center p-6 transition-all duration-700 ease-out overflow-y-auto select-none ${
         isFadingOut ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
@@ -260,7 +260,7 @@ export const WhoIsWatching: React.FC<WhoIsWatchingProps> = ({
       {/* Interactive Netflix Add Profile Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-[99995] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
-          <div className="relative w-full max-w-md bg-[#181818] border border-neutral-700 rounded-lg p-6 sm:p-8 shadow-2xl">
+          <div className="relative w-full max-w-md bg-[#0a0a0a] border border-neutral-700 rounded-lg p-6 sm:p-8 shadow-2xl">
             <button
               type="button"
               onClick={() => setShowAddModal(false)}

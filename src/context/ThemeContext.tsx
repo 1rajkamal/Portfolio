@@ -16,9 +16,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try {
       const saved = localStorage.getItem('theme');
       if (saved === 'light' || saved === 'dark' || saved === 'netflix') return saved as Theme;
-      return 'netflix';
+      return 'dark';
     } catch {
-      return 'netflix';
+      return 'dark';
     }
   });
 

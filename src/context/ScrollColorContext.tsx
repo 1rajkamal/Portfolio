@@ -12,70 +12,70 @@ export interface ZoneColorConfig {
   glow: string;
 }
 
-// Dark Mode Curated Luxury Palette Zones (Midnight, Emerald, Violet, Amber, Ocean)
+// Dark Mode Curated Luxury Palette Zones: 100% Pure AMOLED Black (#000000)
 export const DARK_ZONES: ZoneColorConfig[] = [
-  // 1. Hero: Midnight Luxury Champagne Gold & Warm Amber
+  // 1. Hero: Pure Black Canvas with Champagne Gold & Warm Amber Accents
   {
     id: 'home',
-    bg: '#0A0A0F',
-    surface: '#14141C',
-    textPrimary: '#F8FAFC',
-    textMuted: '#94A3B8',
+    bg: '#000000',
+    surface: '#0a0a0a',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A1A1AA',
     accent: '#D4AF37',      // Champagne Gold
     accent2: '#F59E0B',     // Warm Amber Gold
     glow: 'rgba(212, 175, 55, 0.25)'
   },
-  // 2. About: Charcoal & Soft Violet (#0E0E12 + Violet & Rose)
+  // 2. About: Pure Black Canvas with Soft Violet & Rose Accents
   {
     id: 'about',
-    bg: '#0E0E12',
-    surface: '#17171F',
-    textPrimary: '#F8FAFC',
-    textMuted: '#94A3B8',
+    bg: '#000000',
+    surface: '#0a0a0a',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A1A1AA',
     accent: '#A78BFA',      // Soft Violet
     accent2: '#FF6B9D',     // Rose Magenta
     glow: 'rgba(167, 139, 250, 0.22)'
   },
-  // 3. Skills: Obsidian & Emerald (#0B0F0E + Emerald & Warm Amber)
+  // 3. Skills: Pure Black Canvas with Emerald & Warm Amber Accents
   {
     id: 'skills',
-    bg: '#0B0F0E',
-    surface: '#121A18',
-    textPrimary: '#F8FAFC',
-    textMuted: '#94A3B8',
+    bg: '#000000',
+    surface: '#0a0a0a',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A1A1AA',
     accent: '#2ED9A0',      // Emerald Green
     accent2: '#FFB86B',     // Warm Amber
     glow: 'rgba(46, 217, 160, 0.22)'
   },
-  // 4. Projects: Midnight Sapphire (#080D1A + Ice Cyan & Royal Blue)
+  // 4. Projects: Pure Black Canvas with Ice Cyan & Royal Blue Accents
   {
     id: 'projects',
-    bg: '#080D1A',
-    surface: '#101726',
-    textPrimary: '#F8FAFC',
-    textMuted: '#94A3B8',
+    bg: '#000000',
+    surface: '#0a0a0a',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A1A1AA',
     accent: '#38BDF8',      // Ice Cyan
     accent2: '#818CF8',     // Royal Indigo
     glow: 'rgba(56, 189, 248, 0.22)'
   },
-  // 5. Certificates & Hackathons: Imperial Obsidian (#0F0D15 + Amethyst & Topaz)
+  // 5. Certificates & Hackathons: Pure Black Canvas with Amethyst & Topaz Accents
   {
     id: 'certifications',
-    bg: '#0F0D15',
-    surface: '#191524',
-    textPrimary: '#F8FAFC',
-    textMuted: '#94A3B8',
+    bg: '#000000',
+    surface: '#0a0a0a',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A1A1AA',
     accent: '#C084FC',      // Amethyst
     accent2: '#FBBF24',     // Warm Gold
     glow: 'rgba(192, 132, 252, 0.22)'
   },
-  // 6. Contact: Deep Obsidian Gold (#0A0A0F + Gold & Emerald)
+  // 6. Contact: Pure Black Canvas with Gold & Emerald Accents
   {
     id: 'contact',
-    bg: '#0A0A0F',
-    surface: '#14141C',
-    textPrimary: '#F8FAFC',
-    textMuted: '#94A3B8',
+    bg: '#000000',
+    surface: '#0a0a0a',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A1A1AA',
     accent: '#D4AF37',      // Muted Gold
     accent2: '#2ED9A0',     // Emerald
     glow: 'rgba(212, 175, 55, 0.22)'

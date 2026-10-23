@@ -25,17 +25,17 @@ section, [id] {
 
 :root,
 .dark {
-  /* Dark Mode: Luxury Metallic Champagne Gold & Warm Amber */
-  --bg: #0A0A0F;
-  --surface: #14141C;
-  --surface-hover: #1C1C27;
-  --text-primary: #F8FAFC;
-  --text-muted: #94A3B8;
+  /* Dark Mode: Fully Dark 100% Pure AMOLED Black Theme */
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --surface-hover: #141414;
+  --text-primary: #FFFFFF;
+  --text-muted: #A1A1AA;
   --accent: #D4AF37;
   --accent-2: #F59E0B;
   --glow: rgba(212, 175, 55, 0.25);
-  --border-card: rgba(255, 255, 255, 0.08);
-  --border-card-hover: rgba(212, 175, 55, 0.45);
+  --border-card: rgba(255, 255, 255, 0.1);
+  --border-card-hover: rgba(212, 175, 55, 0.5);
 }
 
 .light {
@@ -112,7 +112,7 @@ body {
   padding: 0.75rem 1.6rem;
   font-weight: 800;
   font-size: 0.875rem;
-  color: #0A0A0F;
+  color: #000000;
   border-radius: 9999px;
   background: var(--accent);
   box-shadow: 0 10px 25px -5px var(--glow);
@@ -252,7 +252,7 @@ body {
   height: 100vh;
   z-index: 100;
   overflow: hidden;
-  background: #0A0A0F;
+  background: #000000;
   user-select: none;
 }
 
@@ -260,7 +260,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(10, 10, 15, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(12px);
   border: 1px solid var(--mk, #D4AF37);
   border-radius: 12px;
@@ -299,7 +299,7 @@ body {
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  background: rgba(10, 10, 15, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   border: 2px solid rgba(212, 175, 55, 0.4);
   backdrop-filter: blur(12px);
   touch-action: none;
