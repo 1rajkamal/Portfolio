@@ -152,12 +152,12 @@ export const LIGHT_ZONES: ZoneColorConfig[] = [
   }
 ];
 
-// Netflix Theme Curated Authentic Red Zones
+// Netflix Theme Curated Authentic Red Zones: 100% Pure AMOLED Black (#000000)
 export const NETFLIX_ZONES: ZoneColorConfig[] = [
   {
     id: 'home',
-    bg: '#141414',
-    surface: '#181818',
+    bg: '#000000',
+    surface: '#0a0a0a',
     textPrimary: '#FFFFFF',
     textMuted: '#A3A3A3',
     accent: '#E50914',      // Netflix Red
@@ -166,8 +166,8 @@ export const NETFLIX_ZONES: ZoneColorConfig[] = [
   },
   {
     id: 'about',
-    bg: '#141414',
-    surface: '#181818',
+    bg: '#000000',
+    surface: '#0a0a0a',
     textPrimary: '#FFFFFF',
     textMuted: '#A3A3A3',
     accent: '#E50914',
@@ -176,8 +176,8 @@ export const NETFLIX_ZONES: ZoneColorConfig[] = [
   },
   {
     id: 'skills',
-    bg: '#141414',
-    surface: '#181818',
+    bg: '#000000',
+    surface: '#0a0a0a',
     textPrimary: '#FFFFFF',
     textMuted: '#A3A3A3',
     accent: '#E50914',
@@ -186,8 +186,8 @@ export const NETFLIX_ZONES: ZoneColorConfig[] = [
   },
   {
     id: 'projects',
-    bg: '#141414',
-    surface: '#181818',
+    bg: '#000000',
+    surface: '#0a0a0a',
     textPrimary: '#FFFFFF',
     textMuted: '#A3A3A3',
     accent: '#E50914',
@@ -196,8 +196,8 @@ export const NETFLIX_ZONES: ZoneColorConfig[] = [
   },
   {
     id: 'certifications',
-    bg: '#141414',
-    surface: '#181818',
+    bg: '#000000',
+    surface: '#0a0a0a',
     textPrimary: '#FFFFFF',
     textMuted: '#A3A3A3',
     accent: '#E50914',
@@ -206,8 +206,8 @@ export const NETFLIX_ZONES: ZoneColorConfig[] = [
   },
   {
     id: 'contact',
-    bg: '#141414',
-    surface: '#181818',
+    bg: '#000000',
+    surface: '#0a0a0a',
     textPrimary: '#FFFFFF',
     textMuted: '#A3A3A3',
     accent: '#E50914',

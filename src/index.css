@@ -53,10 +53,10 @@ section, [id] {
 }
 
 .netflix {
-  /* Netflix Mode: Authentic Crimson Red & Deep Dark */
-  --bg: #141414;
-  --surface: #181818;
-  --surface-hover: #232323;
+  /* Netflix Mode: 100% Pure AMOLED Black & Crimson Red */
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --surface-hover: #141414;
   --text-primary: #FFFFFF;
   --text-muted: #A3A3A3;
   --accent: #E50914;
@@ -81,7 +81,7 @@ body {
 }
 
 .netflix body {
-  background-color: #141414;
+  background-color: #000000;
   color: #FFFFFF;
 }
 
