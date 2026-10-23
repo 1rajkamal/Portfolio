@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/me.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Raj Kamal — Full Stack Developer & Data Scientist | Interactive Portfolio</title>
+    <meta name="description" content="Portfolio of Raj Kamal — Full Stack Developer, Data Scientist, Machine Learning & AI Engineer. Explore projects, technical skills and experience." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      html {
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+      }
+      html, body {
+        background-color: #000000;
+        color: #FFFFFF;
+        margin: 0;
+        padding: 0;
+        overflow-x: clip;
+      }
+      section, [id] {
+        scroll-margin-top: 5rem;
+      }
+      @media (max-width: 768px) {
+        section, [id] {
+          scroll-margin-top: 4.25rem;
+        }
+      }
+      html.dark, html.dark body {
+        background-color: #000000;
+        color: #FFFFFF;
+        margin: 0;
+        padding: 0;
+      }
+      html.netflix, html.netflix body {
+        background-color: #000000;
+        color: #FFFFFF;
+        margin: 0;
+        padding: 0;
+      }
+      html.light, html.light body {
+        background-color: #FAF9F6;
+        color: #0F172A;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script>
+      try {
+        const theme = localStorage.getItem('theme');
+        document.documentElement.classList.remove('dark', 'light', 'netflix');
+        if (theme === 'light') {
+          document.documentElement.classList.add('light');
+        } else if (theme === 'netflix') {
+          document.documentElement.classList.add('netflix');
+        } else {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="/assets/index.dev-CDV3ZbjD.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C74jQZHT.css">
+  </head>
+  <body class="font-sans antialiased selection:bg-[var(--accent)] selection:text-white min-h-screen overflow-x-hidden bg-[#000000]">
+    <div id="root">
+      <div id="initial-preloader" style="position:fixed;inset:0;background:#000000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:system-ui,-apple-system,sans-serif;color:#ffffff;">
+        <div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(229,9,20,0.18);border-top-color:#E50914;animation:rkPreloaderSpin 0.75s linear infinite;"></div>
+        <p style="margin-top:16px;font-size:11px;letter-spacing:0.25em;color:#A3A3A3;font-family:monospace;text-transform:uppercase;">Loading...</p>
+        <style>@keyframes rkPreloaderSpin{to{transform:rotate(360deg)}}</style>
+      </div>
+    </div>
+  </body>
+</html>
